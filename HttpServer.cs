@@ -9,11 +9,11 @@ namespace HttpRequestRcon
 {
     class HttpServer
     {
-        public static HttpListener listener;
-        public static string url = "http://localhost:8000/";
-        public static int pageViews = 0;
-        public static int requestCount = 0;
-        public static string pageData =
+        public HttpListener listener;
+        public string url = "http://localhost:8000/";
+        public int pageViews = 0;
+        public int requestCount = 0;
+        public string pageData =
             "<!DOCTYPE>" +
             "<html>" +
             "  <head>" +
@@ -28,7 +28,7 @@ namespace HttpRequestRcon
             "</html>";
 
 
-        public static async Task HandleIncomingConnections()
+        public async Task HandleIncomingConnections()
         {
             bool runServer = true;
 
@@ -75,7 +75,7 @@ namespace HttpRequestRcon
         }
 
 
-        public static void Main(string[] args)
+        public async void Start()
         {
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
