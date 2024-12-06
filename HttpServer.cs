@@ -19,13 +19,6 @@ namespace HttpRequestRcon
             public bool? acceptNonLocalRequests { get; set; }
         }
 
-        public class HttpRequest
-        {
-            public string? url { get; set; }
-            public string? method { get; set; }
-            public string? userAgent { get; set; }
-            public string? local { get; set; }
-        }
         public class RconCommand
         {
             public string? command { get; set; }
@@ -38,6 +31,8 @@ namespace HttpRequestRcon
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
+            Console.WriteLine("Request #{0} {1}", ++requestCount, req.HttpMethod);
+            return;
             //Console.WriteLine(req.Headers.ToString());
             Console.WriteLine(req.UserAgent);
             Console.WriteLine(req.UserHostAddress);
@@ -83,15 +78,27 @@ namespace HttpRequestRcon
                 
 
                 //Skip Requests which dont target httpRcon
-                if (!req.RawUrl!.StartsWith("/httpRcon")) { continue; }
+                if (req.RawUrl!.StartsWith("/httpRcon") == false)
+                {
+                    Console.WriteLine("Skipped, not targeting httpRcon");
+                    continue; 
+                }
 
                 //Skip NonLocal Requests if not allowed
-                if (config!.acceptNonLocalRequests == false && req.IsLocal == false) { continue; }
+                if (config!.acceptNonLocalRequests == false && req.IsLocal == false)
+                {
+                    Console.WriteLine("Skipped, NonLocal request, which is disabled");
+                    continue;
+                }
 
                 //Skip Unauthorized Requests
-                if (config!.authkey != req.Headers.Get("Authorization")) { continue; }
+                if (config!.authkey != req.Headers.Get("Authorization"))
+                {
+                    Console.WriteLine("Skipped, Unauthorized");
+                    continue;
+                }
 
-                
+                //extract RconCommand from RequestBody
                 RconCommand rconCommand = null!;
                 try
                 {
@@ -99,7 +106,7 @@ namespace HttpRequestRcon
                 }
                 catch
                 {
-                    Console.WriteLine("RconCommand Invalid");
+                    Console.WriteLine("RconCommand is Invalid");
                     continue;
                 }
 
@@ -126,7 +133,7 @@ namespace HttpRequestRcon
 
                 }
 
-                Console.WriteLine("HEY");
+                
                 
 
                 
