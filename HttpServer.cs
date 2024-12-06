@@ -10,55 +10,29 @@ using static HttpRequestRcon.HttpServer;
 
 namespace HttpRequestRcon
 {
+    public class Config
+    {
+        public string Ip { get; set; } = "";
+        public int Port { get; set; } = 8000;
+        public string AuthKey { get; set; } = "";
+        public string ViewKey { get; set; } = "";
+        public bool AcceptNonLocalRequests { get; set; } = false;
+    }
     class HttpServer
     {
-        public class Config
-        {
-            public string Ip { get; set; } = "";
-            public int Port { get; set; } = 8000;
-            public string AuthKey { get; set; } = "";
-            public string ViewKey { get; set; } = "";
-            public bool AcceptNonLocalRequests { get; set; } = false;
-        }
         public class RconCommand
         {
             public string? Command { get; set; }
             public string[] Arguments { get; set; } = { };
         }
-        public class Logs
-        {
-            public int RequestCount { get; set; } = 0;
-            public Request[] UnauthorizedRequests { get; set; } = { };
-        }
-        public class Request
-        {
-            public string? Method { get; set; }
-            public string? UserAgent { get; set; }
-            public string? Url { get; set; }
-            public bool? IsLocal { get; set; }
-            public string? Headers { get; set; }
-            public string? ContentBody { get; set; }
-        }
 
         public HttpListener? listener;
         public Config? config;
-        public Logs? logs;
+        public int RequestCount = 0;
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
-            if (req.RawUrl == "/favicon.ico") { return; }
-            Console.WriteLine("Request #{0} {1}", ++logs!.RequestCount, req.HttpMethod);
-            Request request = new Request();
-            request.Method = req.HttpMethod;
-            request.Url = req.Url!.ToString().Replace("?authkey=" + config!.ViewKey, "");
-            request.UserAgent = req.UserAgent;
-            request.IsLocal = req.IsLocal;
-            request.Headers = req.Headers.ToString();
-            
-            
-            
-            Request[] requestPre = { request };
-            logs.UnauthorizedRequests = requestPre.Concat(logs.UnauthorizedRequests).ToArray();
+            Console.WriteLine("Request #{0} {1}", ++RequestCount, req.HttpMethod);
         }
 
         public RconCommand GetRconCommand(HttpListenerRequest req)
@@ -66,7 +40,7 @@ namespace HttpRequestRcon
             if (!req.HasEntityBody) { return new RconCommand(); }
 
             string requestBody = new StreamReader(req.InputStream, req.ContentEncoding).ReadToEnd();
-            Console.WriteLine(requestBody);
+            
             try
             {
                 return JsonSerializer.Deserialize<RconCommand>(requestBody)!;
@@ -97,8 +71,6 @@ namespace HttpRequestRcon
 
 
 
-                
-
                 //Skip Requests which dont target httpRcon
                 if (req.RawUrl!.StartsWith("/httpRcon") == false)
                 {
@@ -108,6 +80,8 @@ namespace HttpRequestRcon
 
                 PrintRequestDetails(req);
 
+
+
                 //Skip Unauthorized Requests
                 if (!IsAuthorized(req))
                 {
@@ -116,12 +90,6 @@ namespace HttpRequestRcon
                     continue;
                 }
 
-
-
-                RconCommand rconCommand = GetRconCommand(req);
-
-                
-
                 //Skip NonLocal Requests if not allowed
                 if ((config!.AcceptNonLocalRequests == false && req.IsLocal == false) && req.HttpMethod != "GET")
                 {
@@ -129,6 +97,10 @@ namespace HttpRequestRcon
                     RespondToRequest(resp, ToJsonArray("Unauthorized-NL"));
                     continue;
                 }
+
+
+
+                RconCommand rconCommand = GetRconCommand(req);
 
                 //POST Requests
                 if (req.HttpMethod == "POST")
@@ -149,9 +121,8 @@ namespace HttpRequestRcon
                 //GET Requests
                 else if (req.HttpMethod == "GET")
                 {
-                    responseContent = JsonSerializer.Serialize(logs);
+                    responseContent = ToJsonArray("ReadThisBitch");
                 }
-
 
 
 
@@ -171,7 +142,7 @@ namespace HttpRequestRcon
             }
 
             //GET Auth
-            else if ( (req.HttpMethod == "GET") && ( (config!.AuthKey != req.Headers.Get("Authorization")) && !(req.RawUrl.EndsWith("?authkey=" + config.ViewKey)) ) )
+            else if ( (req.HttpMethod == "GET") && ( (config!.AuthKey != req.Headers.Get("Authorization")) && !(req.RawUrl!.EndsWith("?authkey=" + config.ViewKey)) ) )
             {
                 return false;
             }
@@ -194,28 +165,41 @@ namespace HttpRequestRcon
 
         public bool LoadConfig()
         {
-            try
+            if (File.Exists("config.json"))
             {
-                //Try to load config string from file
-                config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"));
-                Console.WriteLine("Config Loaded");
-
-                //Throw error if config data contains incorrect data
-                if (config!.Ip == null || config!.Ip == "" || config.Port == null || config.AuthKey == null || config.AuthKey == "")
+                try
                 {
-                    Console.WriteLine("Error: Invalid Config Data Found");
+                    //Try to load config string from file
+                    config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"));
+                    Console.WriteLine("Config Loaded:");
+
+                    //Throw error if config data contains incorrect data
+                    if (config!.Ip == "" || config.AuthKey == "")
+                    {
+                        Console.WriteLine("Error: Invalid Config Data Found");
+                        return false;
+                    }
+
+                    Console.WriteLine("Ip: " + config.Ip);
+                    Console.WriteLine("Port: " + config.Port);
+                    Console.WriteLine("AuthKey: " + config.AuthKey);
+                    Console.WriteLine("ViewKey: " + config.ViewKey);
+                    Console.WriteLine("AcceptNonLocalRequests: " + config.AcceptNonLocalRequests);
+                    Console.WriteLine();
+
+                    return true;
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Couldnt Read Config");
                     return false;
                 }
-
-                Console.WriteLine("IP: " + config.Ip);
-                Console.WriteLine("PORT: " + config.Port);
-                Console.WriteLine("KEY: " + config.AuthKey);
-
-                return true;
             }
-            catch
+            else
             {
-                Console.WriteLine("Error: Couldnt Read Config");
+                File.Create("config.json");
+                File.WriteAllText("config.json", JsonSerializer.Serialize(new Config()));
+                Console.WriteLine("Error: No config found, created new config file");
                 return false;
             }
         }
@@ -223,7 +207,6 @@ namespace HttpRequestRcon
 
         public async void Start()
         {
-            logs = new Logs();
 
             //Load config & dont start if config not valid
             if (!LoadConfig()) { Console.WriteLine("Error: Config Not Valid"); return; };
