@@ -35,8 +35,6 @@ namespace HttpRequestRcon
             public string? Method { get; set; }
             public string? UserAgent { get; set; }
             public string? Url { get; set; }
-            public string? UserHostAddress { get; set; }
-            public string? UserHostName { get; set; }
             public bool? IsLocal { get; set; }
             public string? Headers { get; set; }
             public string? ContentBody { get; set; }
@@ -54,8 +52,6 @@ namespace HttpRequestRcon
             request.Method = req.HttpMethod;
             request.Url = req.Url!.ToString().Replace("?authkey=" + config!.ViewKey, "");
             request.UserAgent = req.UserAgent;
-            request.UserHostAddress = req.UserHostAddress;
-            request.UserHostName = req.UserHostName;
             request.IsLocal = req.IsLocal;
             request.Headers = req.Headers.ToString();
             
@@ -126,6 +122,14 @@ namespace HttpRequestRcon
 
                 
 
+                //Skip NonLocal Requests if not allowed
+                if ((config!.AcceptNonLocalRequests == false && req.IsLocal == false) && req.HttpMethod != "GET")
+                {
+                    Console.WriteLine("Skipped, Unauthorized-NL");
+                    RespondToRequest(resp, ToJsonArray("Unauthorized-NL"));
+                    continue;
+                }
+
                 //POST Requests
                 if (req.HttpMethod == "POST")
                 {
@@ -150,6 +154,7 @@ namespace HttpRequestRcon
 
 
 
+
                 RespondToRequest(resp, responseContent);
             }
         }
@@ -159,12 +164,6 @@ namespace HttpRequestRcon
         }
         public bool IsAuthorized(HttpListenerRequest req)
         {
-            //Skip NonLocal Requests if not allowed
-            if (config!.AcceptNonLocalRequests == false && req.IsLocal == false)
-            {
-                return false;
-            }
-
             //POST Auth
             if ( (req.HttpMethod == "POST") && (config!.AuthKey != req.Headers.Get("Authorization")) )
             {
