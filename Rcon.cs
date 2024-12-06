@@ -13,12 +13,12 @@ namespace HttpRequestRcon
             //cancel if arguments are null
             if (map == null || map == ""|| gameMode == null || gameMode == "")
             {
-                return "null";
+                return "Invalid Command Arguments";
             }
 
             Console.WriteLine("SwitchMap " + map + " " + gameMode);
 
-            return "null";
+            return "executed";
         }
     }
 }
