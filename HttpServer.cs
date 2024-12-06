@@ -75,7 +75,7 @@ namespace HttpRequestRcon
 
                 PrintRequestDetails(req);
 
-                
+                string responseContent = "DefaultResponse - Closed Request";
 
                 //Skip Requests which dont target httpRcon
                 if (req.RawUrl!.StartsWith("/httpRcon") == false)
@@ -123,8 +123,6 @@ namespace HttpRequestRcon
                             Console.WriteLine("Unknown request");
                             break;
                     }
-
-
                 }
 
                 //GET Requests
@@ -133,22 +131,34 @@ namespace HttpRequestRcon
 
                 }
 
-                
-                
 
-                
 
+
+                RespondToRequest(resp, responseContent);
+                /*
                 // Write the response info
-                string disableSubmit = !runServer ? "{\"disabled\": true}" : "{\"disabled\": false}";
-                byte[] data = Encoding.UTF8.GetBytes(disableSubmit);
+                byte[] data = Encoding.UTF8.GetBytes(responseContent);
                 resp.ContentType = "application/json";
                 resp.ContentEncoding = Encoding.UTF8;
                 resp.ContentLength64 = data.LongLength;
 
                 // Write out to the response stream (asynchronously), then close it
                 await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                resp.Close();
+                resp.Close();*/
             }
+        }
+
+        public async void RespondToRequest(HttpListenerResponse httpResponse, string content)
+        {
+            // Write the response info
+            byte[] data = Encoding.UTF8.GetBytes(content);
+            httpResponse.ContentType = "application/json";
+            httpResponse.ContentEncoding = Encoding.UTF8;
+            httpResponse.ContentLength64 = data.LongLength;
+
+            // Write out to the response stream (asynchronously), then close it
+            await httpResponse.OutputStream.WriteAsync(data, 0, data.Length);
+            httpResponse.Close();
         }
 
         public bool LoadConfig()
