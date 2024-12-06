@@ -10,6 +10,8 @@ namespace HttpRequestRcon
     {
         static void Main()
         {
+            //File.Create("config.txt");
+
             HttpServer server = new HttpServer();
             server.Start();
 

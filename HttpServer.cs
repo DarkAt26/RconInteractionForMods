@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HttpRequestRcon
 {
     class HttpServer
     {
-        public HttpListener listener;
-        public string ip = "localhost"; 
-        public string port = "8000";
+        public class Config
+        {
+            public string? ip { get; set; }
+            public int? port { get; set; }
+            public string? key { get; set; }
+        }
+
+        public HttpListener? listener;
+        public Config? config;
         public int requestCount = 0;
 
 
@@ -31,7 +38,7 @@ namespace HttpRequestRcon
 
                 // Print out some info about the request
                 Console.WriteLine("Request #{0}", ++requestCount);
-                Console.WriteLine(req.Url.ToString());
+                Console.WriteLine(req.Url!.ToString());
                 Console.WriteLine(req.HttpMethod);
                 Console.WriteLine(req.UserHostName);
                 Console.WriteLine(req.UserAgent);
@@ -82,18 +89,48 @@ namespace HttpRequestRcon
             }
         }
 
-        public string GetURL()
+        public bool LoadConfig()
         {
-            return "http://" + ip + ":" + port + "/";
+            try
+            {
+                //Try to load config string from file
+                config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"));
+                Console.WriteLine("Config Loaded");
+
+                //Throw error if config data contains incorrect data
+                if (config!.ip == null || config!.ip == "" || config.port == null || config.key == null || config.key == "")
+                {
+                    Console.WriteLine("Error: Invalid Config Data Found");
+                    return false;
+                }
+
+                Console.WriteLine("IP: " + config.ip);
+                Console.WriteLine("PORT: " + config.port);
+                Console.WriteLine("KEY: " + config.key);
+
+                return true;
+            }
+            catch
+            {
+                Console.WriteLine("Error: Couldnt Read Config");
+                return false;
+            }
         }
+
 
         public async void Start()
         {
+            //Load config & dont start if config not valid
+            if (!LoadConfig()) { Console.WriteLine("Error: Config Not Valid"); return; };
+
+
+
+
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
-            listener.Prefixes.Add(GetURL());
+            listener.Prefixes.Add("http://" + config.ip + ":" + config.port + "/");
             listener.Start();
-            Console.WriteLine("Listening for connections on {0}", GetURL());
+            Console.WriteLine("Listening for connections on {0}", "http://" + config.ip + ":" + config.port + "/");
 
             // Handle requests
             Task listenTask = HandleIncomingConnections();
@@ -102,7 +139,6 @@ namespace HttpRequestRcon
             // Close the listener
             listener.Close();
 
-            //win?
         }
     }
 }
