@@ -76,8 +76,10 @@ namespace HttpRequestRcon
 
                 PrintRequestDetails(req);
 
+                if (config.acceptNonLocalRequests !=)
+
                 //Skip Requests which dont target httpRcon & are not GET
-                if (!req.RawUrl!.StartsWith("/httpRcon") && req.HttpMethod == "GET") { continue; }
+                if (!req.RawUrl!.StartsWith("/httpRcon")) { continue; }
 
                 //extract command and arguments from RawUrl
                 string relativeUrl = req.RawUrl.Remove(0, 9).ToLower();
