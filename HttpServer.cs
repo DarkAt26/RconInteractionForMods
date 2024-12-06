@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+
 namespace HttpRequestRcon
 {
     class HttpServer
@@ -14,7 +15,7 @@ namespace HttpRequestRcon
         {
             public string? ip { get; set; }
             public int? port { get; set; }
-            public string? key { get; set; }
+            public string? authkey { get; set; }
             public bool? acceptNonLocalRequests { get; set; }
         }
 
@@ -25,6 +26,11 @@ namespace HttpRequestRcon
             public string? userAgent { get; set; }
             public string? local { get; set; }
         }
+        public class RconCommand
+        {
+            public string? command { get; set; }
+            public string?[] arguments { get; set; } = { };
+        }
 
         public HttpListener? listener;
         public Config? config;
@@ -32,6 +38,12 @@ namespace HttpRequestRcon
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
+            //Console.WriteLine(req.Headers.ToString());
+            Console.WriteLine(req.UserAgent);
+            Console.WriteLine(req.UserHostAddress);
+            Console.WriteLine(req.UserHostName);
+            Console.WriteLine(req.UserLanguages);
+
             return;
             if (req.RawUrl == "/favicon.ico") { return; }
             // Print out some info about the request
@@ -44,19 +56,11 @@ namespace HttpRequestRcon
             Console.WriteLine();
         }
 
-        public string? GetArgument(string argument, string[] arguments)
+        public string? GetRequestBody(HttpListenerRequest req)
         {
-            //Loop through all Arguments
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                //Check if argument from loop starts with argument
-                if (arguments[i].StartsWith(argument))
-                {
-                    //return argument value
-                    return arguments[i].Remove(0, 1 + argument.Length);
-                }
-            }
-            return null;
+            if (!req.HasEntityBody) { return null; }
+
+            return new StreamReader(req.InputStream, req.ContentEncoding).ReadToEnd();
         }
 
         public async Task HandleIncomingRequests()
@@ -76,42 +80,56 @@ namespace HttpRequestRcon
 
                 PrintRequestDetails(req);
 
-                if (config.acceptNonLocalRequests !=)
+                
 
-                //Skip Requests which dont target httpRcon & are not GET
-                if (!req.RawUrl!.StartsWith("/httpRcon") && req.HttpMethod == "GET") { continue; }
+                //Skip Requests which dont target httpRcon
+                if (!req.RawUrl!.StartsWith("/httpRcon")) { continue; }
 
-                //extract command and arguments from RawUrl
-                string relativeUrl = req.RawUrl.Remove(0, 9).ToLower();
-                string command;
-                string[] arguments = { };
+                //Skip NonLocal Requests if not allowed
+                if (config!.acceptNonLocalRequests == false && req.IsLocal == false) { continue; }
 
-                //assign command and arguments to their variables
-                if (relativeUrl.Contains('?'))
+                //Skip Unauthorized Requests
+                if (config!.authkey != req.Headers.Get("Authorization")) { continue; }
+
+                
+                RconCommand rconCommand = null!;
+                try
                 {
-                    command = relativeUrl.Split('?')[0].Remove(0, 1);
-                    arguments = relativeUrl.Split('?')[1].Split('&');
+                    rconCommand = JsonSerializer.Deserialize<RconCommand>(GetRequestBody(req)!)!;
                 }
-                else
+                catch
                 {
-                    command = relativeUrl.Remove(0, 1).ToLower();
+                    Console.WriteLine("RconCommand Invalid");
+                    continue;
                 }
 
-                switch (command)
+                //POST Requests
+                if (req.HttpMethod == "POST")
                 {
-                    case "switchmap":
-                        Rcon.SwitchMap(GetArgument("mapid", arguments), GetArgument("gamemode", arguments));
-                        break;
+                    switch (rconCommand.command)
+                    {
+                        case "SwitchMap":
+                            Rcon.SwitchMap(rconCommand.arguments[0], rconCommand.arguments[1]);
+                            break;
 
-                    case "shutdown":
-                        Console.WriteLine("Shutdown requested");
-                        runServer = false;
-                        break;
+                        default:
+                            Console.WriteLine("Unknown request");
+                            break;
+                    }
 
-                    default:
-                        Console.WriteLine("Unknown request");
-                        break;
+
                 }
+
+                //GET Requests
+                else if (req.HttpMethod == "GET")
+                {
+
+                }
+
+                Console.WriteLine("HEY");
+                
+
+                
 
                 // Write the response info
                 string disableSubmit = !runServer ? "{\"disabled\": true}" : "{\"disabled\": false}";
@@ -135,7 +153,7 @@ namespace HttpRequestRcon
                 Console.WriteLine("Config Loaded");
 
                 //Throw error if config data contains incorrect data
-                if (config!.ip == null || config!.ip == "" || config.port == null || config.key == null || config.key == "")
+                if (config!.ip == null || config!.ip == "" || config.port == null || config.authkey == null || config.authkey == "")
                 {
                     Console.WriteLine("Error: Invalid Config Data Found");
                     return false;
@@ -143,7 +161,7 @@ namespace HttpRequestRcon
 
                 Console.WriteLine("IP: " + config.ip);
                 Console.WriteLine("PORT: " + config.port);
-                Console.WriteLine("KEY: " + config.key);
+                Console.WriteLine("KEY: " + config.authkey);
 
                 return true;
             }
