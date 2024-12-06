@@ -12,22 +12,7 @@ namespace HttpRequestRcon
         public HttpListener listener;
         public string ip = "localhost"; 
         public string port = "8000";
-        public string url = "";
-        public int pageViews = 0;
         public int requestCount = 0;
-        public string pageData =
-            "<!DOCTYPE>" +
-            "<html>" +
-            "  <head>" +
-            "    <title>HttpListener Example</title>" +
-            "  </head>" +
-            "  <body>" +
-            "    <p>Page Views: {0}</p>" +
-            "    <form method=\"post\" action=\"shutdown\">" +
-            "      <input type=\"submit\" value=\"Shutdown\" {1}>" +
-            "    </form>" +
-            "  </body>" +
-            "</html>";
 
 
         public async Task HandleIncomingConnections()
@@ -45,28 +30,49 @@ namespace HttpRequestRcon
                 HttpListenerResponse resp = ctx.Response;
 
                 // Print out some info about the request
-                Console.WriteLine("Request #: {0}", ++requestCount);
+                Console.WriteLine("Request #{0}", ++requestCount);
                 Console.WriteLine(req.Url.ToString());
                 Console.WriteLine(req.HttpMethod);
                 Console.WriteLine(req.UserHostName);
                 Console.WriteLine(req.UserAgent);
                 Console.WriteLine();
 
-                // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-                if ((req.HttpMethod == "POST") && (req.Url.AbsolutePath == "/shutdown"))
+                // POST Requests
+                if (req.HttpMethod == "POST" && req.Url.AbsolutePath.StartsWith("/httpRcon"))
                 {
-                    Console.WriteLine("Shutdown requested");
-                    runServer = false;
+                    Console.WriteLine(req.Url.AbsolutePath);
+                    Console.WriteLine(req.Url.AbsolutePath.Remove(0, 9));
+
+                    switch (req.Url.AbsolutePath.Remove(0, 9))
+                    {
+                        case "/shutdown":
+                            Console.WriteLine("Shutdown requested");
+                            runServer = false;
+                            break;
+                        case "/restart":
+                            Console.WriteLine("Restart requested");
+                            break;
+                        default:
+                            Console.WriteLine("Unknown request");
+                            break;
+                    }
                 }
 
-                // Make sure we don't increment the page views counter if `favicon.ico` is requested
-                if (req.Url.AbsolutePath != "/favicon.ico")
-                    pageViews += 1;
+                // GET Requests
+                else if (req.HttpMethod == "GET")
+                {
+
+                }
+
+                // Other Requests
+                else
+                {
+                }
 
                 // Write the response info
-                string disableSubmit = !runServer ? "disabled" : "";
-                byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
-                resp.ContentType = "text/html";
+                string disableSubmit = !runServer ? "{\"disabled\": true}" : "{\"disabled\": false}";
+                byte[] data = Encoding.UTF8.GetBytes(disableSubmit);
+                resp.ContentType = "application/json";
                 resp.ContentEncoding = Encoding.UTF8;
                 resp.ContentLength64 = data.LongLength;
 
@@ -76,15 +82,18 @@ namespace HttpRequestRcon
             }
         }
 
+        public string GetURL()
+        {
+            return "http://" + ip + ":" + port + "/";
+        }
 
         public async void Start()
         {
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
-            url = "http://" + ip + ":" + port + "/";
-            listener.Prefixes.Add(url);
+            listener.Prefixes.Add(GetURL());
             listener.Start();
-            Console.WriteLine("Listening for connections on {0}", url);
+            Console.WriteLine("Listening for connections on {0}", GetURL());
 
             // Handle requests
             Task listenTask = HandleIncomingConnections();
