@@ -10,7 +10,9 @@ namespace HttpRequestRcon
     class HttpServer
     {
         public HttpListener listener;
-        public string url = "http://localhost:8000/";
+        public string ip = "localhost"; 
+        public string port = "8000";
+        public string url = "";
         public int pageViews = 0;
         public int requestCount = 0;
         public string pageData =
@@ -79,6 +81,7 @@ namespace HttpRequestRcon
         {
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
+            url = "http://" + ip + ":" + port + "/";
             listener.Prefixes.Add(url);
             listener.Start();
             Console.WriteLine("Listening for connections on {0}", url);

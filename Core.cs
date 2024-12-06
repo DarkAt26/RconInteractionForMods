@@ -10,14 +10,14 @@ namespace HttpRequestRcon
     {
         static void Main()
         {
-            //HttpServer server = new HttpServer();
-            //server.Start();
+            HttpServer server = new HttpServer();
+            server.Start();
 
             Console.WriteLine("FUCK");
 
-            HttpClient client = new HttpClient();
-            var json = client.GetStringAsync("https://raw.githubusercontent.com/DarkAt26/PavlovVR-RandomBlueprintCollection/refs/heads/main/ModifyItems");
-            Console.WriteLine(json.Result);
+            //HttpClient client = new HttpClient();
+            //var json = client.GetStringAsync("https://raw.githubusercontent.com/DarkAt26/PavlovVR-RandomBlueprintCollection/refs/heads/main/ModifyItems");
+            //Console.WriteLine(json.Result);
         }
     }
 }
