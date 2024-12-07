@@ -77,11 +77,11 @@ namespace RconInteractionForMods
             try
             {
                 await client.SendAsync(messageBytes, SocketFlags.None);
-                Log(message);
+                Log("Send: " + message);
             }
             catch
             {
-                Log("Error: Connection Closed");
+                Log("Send: Error: Connection Closed");
             }
         }
 
@@ -90,7 +90,7 @@ namespace RconInteractionForMods
             byte[] buffer = new byte[1_024];
             int received = await client.ReceiveAsync(buffer, SocketFlags.None);
             string response = Encoding.UTF8.GetString(buffer, 0, received);
-            Log(response);
+            Log("Received: " + response);
             return response;
         }
 
