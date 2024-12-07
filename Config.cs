@@ -9,24 +9,23 @@ namespace RconInteractionForMods
 {
     public static class Config
     {
-        public static string configUrl = "rifm_config.json";
         public static Cfg cfg = new Cfg();
 
-        public static void Load()
+        public static void Load(string configPath)
         {
             //Check if config file exists and if not create a new one with default params and stop
-            if (!File.Exists(configUrl))
+            if (!File.Exists(configPath))
             {
                 //create default config string
                 string jsonString = JsonConvert.SerializeObject(cfg, Formatting.Indented);
                 
-                File.WriteAllText(configUrl, jsonString);
+                File.WriteAllText(configPath, jsonString);
                 
                 return;
             }
 
             //read configString from configUrl
-            string configString = System.IO.File.ReadAllText(configUrl);
+            string configString = System.IO.File.ReadAllText(configPath);
 
             //stop if config string is empty
             if (string.IsNullOrEmpty(configString))
@@ -47,7 +46,7 @@ namespace RconInteractionForMods
 
         public static void Print()
         {
-            Console.WriteLine("Config:");
+            Console.WriteLine("---------------------------Config---------------------------");
             Console.WriteLine("HttpRequest_Ip: " + cfg.HttpRequest_Ip);
             Console.WriteLine("HttpRequest_Port: " + cfg.HttpRequest_Port);
             Console.WriteLine("HttpRequest_AuthKey: " + cfg.HttpRequest_AuthKey);
@@ -57,6 +56,7 @@ namespace RconInteractionForMods
             Console.WriteLine("Rcon_Ip: " + cfg.Rcon_Ip);
             Console.WriteLine("Rcon_Port: " + cfg.Rcon_Port);
             Console.WriteLine("Rcon_Password: " + cfg.Rcon_Password);
+            Console.WriteLine("------------------------------------------------------------");
             Console.WriteLine();
         }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RconInteractionForMods
 {
-    public static class RconCommands
+    public class RconCommands
     {
-        public static string SwitchMap(string? map, string? gameMode)
+        public async Task<string> SwitchMap(string? map, string? gameMode)
         {
             //cancel if arguments are null
             if (map == null || map == ""|| gameMode == null || gameMode == "")
@@ -16,9 +16,20 @@ namespace RconInteractionForMods
                 return "Invalid Command Arguments";
             }
 
+            return await Core.rconClient.ExecuteCommandAsync("SwitchMap " + map + " " + gameMode);
+        }
+
+        public async Task<string> RandomShit(string? map, string? gameMode)
+        {
+            //cancel if arguments are null
+            if (map == null || map == "" || gameMode == null || gameMode == "")
+            {
+                return "Invalid Command Arguments";
+            }
+
             //Console.WriteLine("SwitchMap " + map + " " + gameMode);
 
-            Core.rconServer.rconCommandStack.Add("UpdateServerName DarkAt26-RandomDynamicName-HttpRcon-" + new Random().Next(0, 10000000));
+            await Core.rconClient.ExecuteCommandAsync("UpdateServerName DarkAt26-RandomDynamicNameLLLLL-" + new Random().Next(0, 10000000));
 
             return "executed";
         }

@@ -19,64 +19,65 @@ namespace RconInteractionForMods
 {
     public class RconClient
     {
-        public StreamWriter? commandWriter;
-
-        public List<string> rconCommandStack = new List<string>() { "UpdateServerName DarkAt26-RandomDynamicName-" + new Random().Next(0, 10000000) };
-
-        public async void Start()
+        public void Start()
         {
             Log("Starting");
 
             //Create Rcon Connection
-            ConnectToRcon();
+            _ = RconConnection();
         }
 
-        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        public async Task ConnectToRcon()
+        public async Task RconConnection()
         {
-            await socket.ConnectAsync(Config.cfg.Rcon_Ip, Config.cfg.Rcon_Port);
-            await using NetworkStream stream = new(socket);
-            using StreamReader reader = new(stream);
-            await using StreamWriter writer = new(stream);
-            await writer.WriteAsync(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
-            await writer.FlushAsync();
-            commandWriter = writer;
+            //Create connection
+            await client.ConnectAsync(Config.cfg.Rcon_Ip, Config.cfg.Rcon_Port);
+
+            //Check if response is "Password: "
+            if (await Receive() != "Password: ")
+            {
+                Log("ERROR: Unexpected Process");
+                return;
+            }
+
+            //respond with Password
+            Send(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
+
+            //check if response is Authenticated
+            if (await Receive() != "Authenticated=1\r\n")
+            {
+                Log("ERROR: Unauthorized");
+                return;
+            }
 
             Log("Connected.");
 
+            //InfinityLoop to keep the connection up
             while (true)
             {
-
-                if (rconCommandStack.Count != 0)
-                {
-                    await ExecuteCommandAsync(rconCommandStack[0]);
-                    rconCommandStack.RemoveAt(0);
-                    
-                    //var a = reader.ReadToEndAsync();
-                    //Console.WriteLine(a);
-                    
-                    await commandWriter.FlushAsync();
-                    await Task.Delay(200);
-                }
+                await Task.Delay(2000);
+                Console.WriteLine("Loop");
             }
         }
 
-        public async Task ExecuteCommandAsync(string command)
+        public async Task<string> ExecuteCommandAsync(string command)
         {
-            await commandWriter.WriteAsync(command);
-            //await commandWriter.FlushAsync();
-            Log("Executed Command: " + command);
+            Log("Execute Command: " + command);
+            
+            Send(command);
+            
+            return await Receive();
         }
 
-        public async void Send(Socket client, string message)
+        public async void Send(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             await client.SendAsync(messageBytes, SocketFlags.None);
             Console.WriteLine(message);
         }
 
-        public async Task<string> Receive(Socket client)
+        public async Task<string> Receive()
         {
             byte[] buffer = new byte[1_024];
             int received = await client.ReceiveAsync(buffer, SocketFlags.None);
@@ -84,7 +85,6 @@ namespace RconInteractionForMods
             Console.WriteLine(response);
             return response;
         }
-
 
         public void Log(string data)
         {

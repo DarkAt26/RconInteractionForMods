@@ -45,12 +45,8 @@ namespace RconInteractionForMods
 
         public async Task HandleIncomingRequests()
         {
-            bool runServer = true;
-
-            // While a user hasn't visited the `shutdown` url, keep on handling requests
             while (true)
             {
-                Console.WriteLine();
                 // Will wait here until we hear from a connection
                 HttpListenerContext listnerContext = await listener!.GetContextAsync();
 
@@ -59,8 +55,6 @@ namespace RconInteractionForMods
                 HttpListenerResponse resp = listnerContext.Response;
 
                 string responseContent = "This message shouldnt be seen at any point. Something went wrong.";
-
-
 
                 //Skip Requests which dont target httpRcon
                 if (req.RawUrl!.StartsWith("/httpRcon") == false)
@@ -99,8 +93,10 @@ namespace RconInteractionForMods
                     switch (rconCommand.Command)
                     {
                         case "SwitchMap":
-                            responseContent = RconCommands.SwitchMap(rconCommand.Arguments[0], rconCommand.Arguments[1]);
-                            
+                            responseContent = await Core.rconClient.ExecuteCommandAsync("SwitchMap " + rconCommand.Arguments[0] + " " + rconCommand.Arguments[1]);
+                            break;
+                        case "UpdateServerName":
+                            responseContent = await Core.rconClient.ExecuteCommandAsync("UpdateServerName " + rconCommand.Arguments[0]);
                             break;
 
                         default:
@@ -115,8 +111,6 @@ namespace RconInteractionForMods
                 {
                     responseContent = ToJsonArray("ReadThisBitch");
                 }
-
-
 
                 RespondToRequest(resp, responseContent);
             }
@@ -158,7 +152,7 @@ namespace RconInteractionForMods
 
 
 
-        public async void Start()
+        public void Start()
         {
             Console.WriteLine("Starting HttpServer...");
 
@@ -169,12 +163,8 @@ namespace RconInteractionForMods
             Console.WriteLine("Listening for requests on {0}", "http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
 
             // Handle requests
-            HandleIncomingRequests();
-            //Task listenTask = HandleIncomingRequests();
-            //listenTask.GetAwaiter().GetResult();
+            _ =HandleIncomingRequests();
 
-            // Close the listener
-            //listener.Close();
 
         }
     }
