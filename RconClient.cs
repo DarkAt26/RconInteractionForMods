@@ -54,7 +54,7 @@ namespace RconInteractionForMods
             Log("Connected.");
 
             //InfinityLoop to keep the connection up
-            //RemoteHost closes connection after 3 to 5min???
+            //RemoteHost closes connection after 3 to 5min
             while (true)
             {
                 await Task.Delay(150000);
@@ -74,8 +74,15 @@ namespace RconInteractionForMods
         public async void Send(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-            await client.SendAsync(messageBytes, SocketFlags.None);
-            Console.WriteLine(message);
+            try
+            {
+                await client.SendAsync(messageBytes, SocketFlags.None);
+                Log(message);
+            }
+            catch
+            {
+                Log("Error: Connection Closed");
+            }
         }
 
         public async Task<string> Receive()
@@ -83,7 +90,7 @@ namespace RconInteractionForMods
             byte[] buffer = new byte[1_024];
             int received = await client.ReceiveAsync(buffer, SocketFlags.None);
             string response = Encoding.UTF8.GetString(buffer, 0, received);
-            Console.WriteLine(response);
+            Log(response);
             return response;
         }
 
