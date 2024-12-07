@@ -54,10 +54,11 @@ namespace RconInteractionForMods
             Log("Connected.");
 
             //InfinityLoop to keep the connection up
+            //RemoteHost closes connection after 3 to 5min???
             while (true)
             {
-                await Task.Delay(2000);
-                Console.WriteLine("Loop");
+                await Task.Delay(150000);
+                Send("KeepAlive");
             }
         }
 
