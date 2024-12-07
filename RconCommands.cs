@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HttpRequestRcon
+namespace RconInteractionForMods
 {
-    public static class Rcon
+    public static class RconCommands
     {
         public static string SwitchMap(string? map, string? gameMode)
         {

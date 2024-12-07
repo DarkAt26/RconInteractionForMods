@@ -6,31 +6,28 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace HttpRequestRcon
+namespace RconInteractionForMods
 {
     class Core
     {
         static void Main()
         {
-            //File.Create("config.txt");
+            //Load & Print Config
+            Config.Load();
+            Config.Print();
 
-            HttpServer server = new HttpServer();
-            WebSocketServer ws = new WebSocketServer();
-            RconInteractionForModsA rconInteractionForMods = new RconInteractionForModsA();
-            //rconInteractionForMods.Start();
-            //ws.Start();
-            //server.Start();
-
-            RconInteractionForMods.Config.Load();
-
-            RconInteractionForMods.Config.Print();
+            //Create and start servers
+            HttpServer httpServer = new HttpServer();
+            RconServer rconServer = new RconServer();
+            httpServer.Start();
+            rconServer.Start();
             
             Console.WriteLine("FUCK");
 
-            AsyncTest asyncTest = new AsyncTest();
-            asyncTest.MyMethodAsync(5);
-            asyncTest.MyMethodAsync(2);
-            asyncTest.MyMethodAsync(20);
+            //AsyncTest asyncTest = new AsyncTest();
+            //asyncTest.MyMethodAsync(5);
+            //asyncTest.MyMethodAsync(2);
+            //asyncTest.MyMethodAsync(20);
 
             while (true) { }
 

@@ -14,43 +14,15 @@ using System.IO;
 using System.Runtime.Intrinsics.X86;
 using System.Xml.Linq;
 
-namespace HttpRequestRcon
+namespace RconInteractionForMods
 {
-    class WebSocketServer
+    public class RconServer
     {
-        public void Start()
-        {
-            TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 80);
-
-            server.Start();
-            Console.WriteLine("Server has started on 127.0.0.1:80.{0}Waiting for a connection…", Environment.NewLine);
-
-            TcpClient client = server.AcceptTcpClient();
-
-            Console.WriteLine("A client connected.");
-        }
-    }
-
-    public class RconInteractionForModsA
-    {
-        public Config? config;
         public StreamWriter? commandWriter;
-
-
-
 
         public async void Start()
         {
-            Console.WriteLine("Start?");
-
-            config = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("rifm_config.json"));
-
-            Console.WriteLine(config.IP);
-            Console.WriteLine(config.Port);
-            Console.WriteLine(config.Password);
-
-            Console.WriteLine("Starting");
-
+            Console.WriteLine("Starting RconServer...");
             // Handle requests
             Task listenTask = ConnectToRcon();
             listenTask.GetAwaiter().GetResult();
@@ -65,11 +37,11 @@ namespace HttpRequestRcon
 
         public async Task ConnectToRcon()
         {
-            await socket.ConnectAsync(config.IP, config.Port);
+            await socket.ConnectAsync(Config.cfg.Rcon_Ip, Config.cfg.Rcon_Port);
             await using NetworkStream stream = new(socket);
             using StreamReader reader = new(stream);
             await using StreamWriter writer = new(stream);
-            await writer.WriteAsync(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(config.Password))).ToLower());
+            await writer.WriteAsync(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
             await writer.FlushAsync();
             commandWriter = writer;
 
@@ -88,13 +60,6 @@ namespace HttpRequestRcon
             await commandWriter.WriteAsync(command);
             await commandWriter.FlushAsync();
             Console.WriteLine(command);
-        }
-
-        public class Config
-        {
-            public string IP { get; set; } = "";
-            public int Port { get; set; } = 0;
-            public string Password { get; set; } = "";
         }
     }
 }
