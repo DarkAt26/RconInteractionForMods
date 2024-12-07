@@ -13,6 +13,7 @@ using static System.Net.WebRequestMethods;
 using System.IO;
 using System.Runtime.Intrinsics.X86;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RconInteractionForMods
 {
@@ -20,17 +21,14 @@ namespace RconInteractionForMods
     {
         public StreamWriter? commandWriter;
 
+        public List<string> rconCommandStack = new List<string>() { "UpdateServerName DarkAt26-RandomDynamicName-" + new Random().Next(0, 10000000) };
+
         public async void Start()
         {
-            Console.WriteLine("Starting RconServer...");
-            // Handle requests
-            Task listenTask = ConnectToRcon();
-            //listenTask.GetAwaiter().GetResult();
+            Log("Starting");
 
-
-            //Console.WriteLine("Starting");
-            //await ConnectToRcon();
-            Console.WriteLine("Stopped");
+            //Create Rcon Connection
+            ConnectToRcon();
         }
 
         private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -45,22 +43,35 @@ namespace RconInteractionForMods
             await writer.FlushAsync();
             commandWriter = writer;
 
-            Console.WriteLine("Connected");
+            Log("Connected.");
 
             while (true)
             {
-                Thread.Sleep(2000);
-                //Task.Delay(2000);
-                Console.WriteLine("Waited");
-                await ExecuteCommandAsync("UpdateServerName DarkAt26-RandomDynamicName-" + new Random().Next(0,10000000));
+
+                if (rconCommandStack.Count != 0)
+                {
+                    await ExecuteCommandAsync(rconCommandStack[0]);
+                    rconCommandStack.RemoveAt(0);
+                    
+                    //var a = reader.ReadToEndAsync();
+                    //Console.WriteLine(a);
+                    
+                    await commandWriter.FlushAsync();
+                    await Task.Delay(200);
+                }
             }
         }
 
         public async Task ExecuteCommandAsync(string command)
         {
             await commandWriter.WriteAsync(command);
-            await commandWriter.FlushAsync();
-            Console.WriteLine(command);
+            //await commandWriter.FlushAsync();
+            Log("Executed Command: " + command);
+        }
+
+        public void Log(string data)
+        {
+            Console.WriteLine("RconServer: " + data);
         }
     }
 }

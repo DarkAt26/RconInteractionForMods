@@ -16,7 +16,9 @@ namespace RconInteractionForMods
                 return "Invalid Command Arguments";
             }
 
-            Console.WriteLine("SwitchMap " + map + " " + gameMode);
+            //Console.WriteLine("SwitchMap " + map + " " + gameMode);
+
+            Core.rconServer.rconCommandStack.Add("UpdateServerName DarkAt26-RandomDynamicName-HttpRcon-" + new Random().Next(0, 10000000));
 
             return "executed";
         }

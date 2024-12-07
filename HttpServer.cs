@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RconInteractionForMods
 {
-    class HttpServer
+    public class HttpServer
     {
         public class RconCommand
         {
@@ -48,7 +48,7 @@ namespace RconInteractionForMods
             bool runServer = true;
 
             // While a user hasn't visited the `shutdown` url, keep on handling requests
-            while (runServer)
+            while (true)
             {
                 Console.WriteLine();
                 // Will wait here until we hear from a connection
@@ -100,6 +100,7 @@ namespace RconInteractionForMods
                     {
                         case "SwitchMap":
                             responseContent = RconCommands.SwitchMap(rconCommand.Arguments[0], rconCommand.Arguments[1]);
+                            
                             break;
 
                         default:
@@ -168,7 +169,8 @@ namespace RconInteractionForMods
             Console.WriteLine("Listening for requests on {0}", "http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
 
             // Handle requests
-            Task listenTask = HandleIncomingRequests();
+            HandleIncomingRequests();
+            //Task listenTask = HandleIncomingRequests();
             //listenTask.GetAwaiter().GetResult();
 
             // Close the listener
