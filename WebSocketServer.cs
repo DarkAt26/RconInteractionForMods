@@ -31,7 +31,7 @@ namespace HttpRequestRcon
         }
     }
 
-    public class RconInteractionForMods
+    public class RconInteractionForModsA
     {
         public Config? config;
         public StreamWriter? commandWriter;

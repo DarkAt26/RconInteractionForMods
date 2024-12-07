@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RconInteractionForMods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace HttpRequestRcon
 {
@@ -14,11 +16,15 @@ namespace HttpRequestRcon
 
             HttpServer server = new HttpServer();
             WebSocketServer ws = new WebSocketServer();
-            RconInteractionForMods rconInteractionForMods = new RconInteractionForMods();
+            RconInteractionForModsA rconInteractionForMods = new RconInteractionForModsA();
             //rconInteractionForMods.Start();
             //ws.Start();
             //server.Start();
 
+            RconInteractionForMods.Config.Load();
+
+            RconInteractionForMods.Config.Print();
+            
             Console.WriteLine("FUCK");
 
             AsyncTest asyncTest = new AsyncTest();
