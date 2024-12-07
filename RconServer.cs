@@ -25,7 +25,7 @@ namespace RconInteractionForMods
             Console.WriteLine("Starting RconServer...");
             // Handle requests
             Task listenTask = ConnectToRcon();
-            listenTask.GetAwaiter().GetResult();
+            //listenTask.GetAwaiter().GetResult();
 
 
             //Console.WriteLine("Starting");
@@ -50,6 +50,7 @@ namespace RconInteractionForMods
             while (true)
             {
                 Thread.Sleep(2000);
+                //Task.Delay(2000);
                 Console.WriteLine("Waited");
                 await ExecuteCommandAsync("UpdateServerName DarkAt26-RandomDynamicName-" + new Random().Next(0,10000000));
             }

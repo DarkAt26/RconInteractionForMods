@@ -169,10 +169,10 @@ namespace RconInteractionForMods
 
             // Handle requests
             Task listenTask = HandleIncomingRequests();
-            listenTask.GetAwaiter().GetResult();
+            //listenTask.GetAwaiter().GetResult();
 
             // Close the listener
-            listener.Close();
+            //listener.Close();
 
         }
     }
