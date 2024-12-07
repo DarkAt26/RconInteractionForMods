@@ -17,7 +17,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RconInteractionForMods
 {
-    public class RconServer
+    public class RconClient
     {
         public StreamWriter? commandWriter;
 
@@ -68,6 +68,23 @@ namespace RconInteractionForMods
             //await commandWriter.FlushAsync();
             Log("Executed Command: " + command);
         }
+
+        public async void Send(Socket client, string message)
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            await client.SendAsync(messageBytes, SocketFlags.None);
+            Console.WriteLine(message);
+        }
+
+        public async Task<string> Receive(Socket client)
+        {
+            byte[] buffer = new byte[1_024];
+            int received = await client.ReceiveAsync(buffer, SocketFlags.None);
+            string response = Encoding.UTF8.GetString(buffer, 0, received);
+            Console.WriteLine(response);
+            return response;
+        }
+
 
         public void Log(string data)
         {

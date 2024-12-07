@@ -14,19 +14,15 @@ namespace RconInteractionForMods
      public static class Core
      {
         public static HttpServer httpServer = new HttpServer();
-        public static RconServer rconServer = new RconServer();
+        public static RconClient rconClient = new RconClient();
         public static void Main()
         {
             //Load & Print Config
             Config.Load();
             Config.Print();
-
-            //Create and start servers
-            //HttpServer? httpServer = new HttpServer();
-            //RconServer? rconServer = new RconServer();
             
             //httpServer.Start();
-            //rconServer.Start();
+            //rconClient.Start();
 
 
             Testing testing = new Testing();
@@ -173,16 +169,16 @@ namespace RconInteractionForMods
 
         public async void Send(Socket client, string message)
         {
-            var messageBytes = Encoding.UTF8.GetBytes(message);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             await client.SendAsync(messageBytes, SocketFlags.None);
             Console.WriteLine(message);
         }
 
         public async Task<string> Receive(Socket client)
         {
-            var buffer = new byte[1_024];
-            var received = await client.ReceiveAsync(buffer, SocketFlags.None);
-            var response = Encoding.UTF8.GetString(buffer, 0, received);
+            byte[] buffer = new byte[1_024];
+            int received = await client.ReceiveAsync(buffer, SocketFlags.None);
+            string response = Encoding.UTF8.GetString(buffer, 0, received);
             Console.WriteLine(response);
             return response;
         }
