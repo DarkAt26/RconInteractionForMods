@@ -21,8 +21,6 @@ namespace RconInteractionForMods
     {
         public void Start()
         {
-            Log("Starting");
-
             //Create Rcon Connection
             _ = RconConnection();
         }
@@ -96,7 +94,7 @@ namespace RconInteractionForMods
 
         public void Log(string data)
         {
-            Console.WriteLine("RconServer: " + data);
+            Console.WriteLine("RconClient: " + data);
         }
     }
 }

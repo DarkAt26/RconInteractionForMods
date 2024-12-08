@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 
 
 namespace RconInteractionForMods
@@ -14,7 +15,8 @@ namespace RconInteractionForMods
     {
         public class RconCommand
         {
-            public string? Command { get; set; }
+            public string UGC { get; set; } = "";
+            public string Command { get; set; } = "";
             public string[] Arguments { get; set; } = { };
         }
 
@@ -87,6 +89,8 @@ namespace RconInteractionForMods
 
                 RconCommand rconCommand = GetRconCommand(req);
 
+                Log(rconCommand.UGC);
+
                 //POST Requests
                 if (req.HttpMethod == "POST")
                 {
@@ -154,18 +158,19 @@ namespace RconInteractionForMods
 
         public void Start()
         {
-            Console.WriteLine("Starting HttpServer...");
-
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
             listener.Prefixes.Add("http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
             listener.Start();
-            Console.WriteLine("Listening for requests on {0}", "http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
+            Log("Started.");
 
             // Handle requests
             _ =HandleIncomingRequests();
+        }
 
-
+        public void Log(string data)
+        {
+            Console.WriteLine("HttpServer: " + data);
         }
     }
 }
