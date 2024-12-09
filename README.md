@@ -1,7 +1,7 @@
 # RconInteractionForMods
 
 ```
-[Unit]<br>
+[Unit]
 Description=httpRcon
 
 [Service]
