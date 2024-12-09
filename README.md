@@ -2,6 +2,7 @@
 
 # GUIDE NOT READY YET, WILL BE COMPLETED IN THE NEXT COUPLE DAYS 
 
+# #1
 ```
 mkdir RIFM
 ```
@@ -63,3 +64,5 @@ sudo systemctl restart RconInteractionForMods
 ```
 sudo systemctl status RconInteractionForMods
 ```
+
+# #2
