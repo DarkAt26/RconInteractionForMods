@@ -13,7 +13,7 @@ using static RconInteractionForMods.HttpServer;
 
 namespace RconInteractionForMods
 {
-    public class HttpServer
+    public partial class HttpServer
     {
         public class RconCommand
         {
@@ -197,66 +197,5 @@ namespace RconInteractionForMods
         {
             Console.WriteLine("HttpServer: " + data);
         }
-
-        public string[] rconCommands =
-        {
-            "Help",
-            "AddMapRotation",
-            "AddMod",
-            "Ban",
-            "Banlist",
-            "ClearEmptyVehicles",
-            "Disconnect",
-            "EnableCompMode",
-            "EnableVerboseLogging",
-            "EnableWhitelist",
-            "Gag",
-            "GiveAll",
-            "GiveCash",
-            "GiveItem",
-            "GiveTeamCash",
-            "InspectAll",
-            "InspectPlayer",
-            "InspectTeam",
-            "ItemList",
-            "Kick",
-            "Kill",
-            "MapList",
-            "ModeratorList",
-            "RefreshList",
-            "RemoveMapRotation",
-            "RemoveMod",
-            "ResetSND",
-            "PauseMatch",
-            "RotateMap",
-            "ServerInfo",
-            "SetBalanceTableURL",
-            "SetCash",
-            "SetLimitedAmmoType",
-            "SetMaxPlayers",
-            "SetPin",
-            "SetPlayerSkin",
-            "SetTimeLimit",
-            "ShowNametags",
-            "ShutdownServer",
-            "Slap",
-            "SwitchMap",
-            "SwitchTeam",
-            "Teleport",
-            "TTTAlwaysEnableSkinMenu",
-            "TTTEndRound",
-            "TTTFlushKarma",
-            "TTTGiveCredits",
-            "TTTPauseTimer",
-            "TTTSetKarma",
-            "TTTSetRole",
-            "Unban",
-            "UpdateServerName",
-            "UGCAddMod",
-            "UGCClearModList",
-            "UGCModList",
-            "UGCRemoveMod"
-        };
-
     }
 }
