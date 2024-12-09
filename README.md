@@ -9,12 +9,24 @@ wget -P /root/RIFM -O RconInteractionForMods https://github.com/DarkAt26/RconInt
 ```
 chmod +x RconInteractionForMods
 ```
+```
+cd
+```
+
+
 
 ```
-./RconInteractionForMods
+./RIFM/RconInteractionForMods
 ```
-
-
+```
+nano ~/RIFM/rifm_config.json
+```
+```
+nano ~/RIFM/rifm_cmd_config.json
+```
+```
+./RIFM/RconInteractionForMods
+```
 
 
 
