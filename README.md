@@ -22,3 +22,15 @@ User=root
 [Install]
 WantedBy = multi-user.target
 ```
+```
+sudo systemctl start httpRcon
+```
+```
+sudo systemctl stop httpRcon
+```
+```
+sudo systemctl restart httpRcon
+```
+```
+sudo systemctl status httpRcon
+```
