@@ -10,6 +10,7 @@ namespace RconInteractionForMods
     public static class Config
     {
         public static Cfg cfg = new Cfg();
+        public static Dictionary<string, string[]> cmds = new Dictionary<string, string[]>();
 
         public static void Load(string configPath)
         {
@@ -60,6 +61,59 @@ namespace RconInteractionForMods
             Console.WriteLine();
         }
 
+        public static void LoadCmdCfg(string cmdConfigPath)
+        {
+            //Check if cmdConfig file exists and if not create a new one with default params and stop
+            if (!File.Exists(cmdConfigPath))
+            {
+                //create default cmdConfig string
+                string[] commandExamples = { "RconCmd1", "RconCmd2" };
+                cmds.Add("UGC0000000", commandExamples );
+                string jsonString = JsonConvert.SerializeObject(cmds, Formatting.Indented);
+
+                File.WriteAllText(cmdConfigPath, jsonString);
+
+                return;
+            }
+
+            //read cmdConfigString from cmdConfigUrl
+            string cmdConfigString = System.IO.File.ReadAllText(cmdConfigPath);
+
+            //stop if config string is empty
+            if (string.IsNullOrEmpty(cmdConfigString))
+            {
+                return;
+            }
+
+            //try to Deserialize the cmdConfig string into the config var
+            try
+            {
+                cmds = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(cmdConfigString)!;
+            }
+            catch
+            {
+
+            }
+        }
+
+        public static void PrintCmdCfg()
+        {
+            Console.WriteLine("-------------------------CmdConfig--------------------------");
+
+            foreach (KeyValuePair<string, string[]> kvp in cmds)
+            {
+                string array = "";
+                foreach (string s in kvp.Value)
+                {
+                    array += s + ", ";
+                }
+                array = array.Remove(array.Length - 2, 2);
+                Console.WriteLine(kvp.Key + ": " + array);
+            }
+
+            Console.WriteLine("------------------------------------------------------------");
+            Console.WriteLine();
+        }
 
         public class Cfg //DataHolder
         {

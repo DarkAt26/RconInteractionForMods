@@ -3,15 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Transactions;
+using static RconInteractionForMods.HttpServer;
 
 
 namespace RconInteractionForMods
 {
-    public class HttpServer
+    public partial class HttpServer
     {
         public class RconCommand
         {
@@ -80,8 +82,8 @@ namespace RconInteractionForMods
                 //Skip NonLocal Requests if not allowed
                 if ((Config.cfg.HttpRequest_AcceptNonLocalRequests == false && req.IsLocal == false) && req.HttpMethod != "GET")
                 {
-                    Console.WriteLine("Skipped, Unauthorized-NL");
-                    RespondToRequest(resp, ToJsonArray("Unauthorized-NL"));
+                    Console.WriteLine("Skipped, Unauthorized-NonLocal");
+                    RespondToRequest(resp, ToJsonArray("Unauthorized-NonLocal"));
                     continue;
                 }
 
@@ -89,25 +91,22 @@ namespace RconInteractionForMods
 
                 RconCommand rconCommand = GetRconCommand(req);
 
+
+                //Skip if UGC isnt allowed to execute Command
+                if ( !(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null)
+                {
+                    Console.WriteLine("Skipped, Unauthorized-UGC");
+                    RespondToRequest(resp, ToJsonArray("Unauthorized-UGC"));
+                    continue;
+                }
+
+
                 Log(rconCommand.UGC);
 
                 //POST Requests
                 if (req.HttpMethod == "POST")
                 {
-                    switch (rconCommand.Command)
-                    {
-                        case "SwitchMap":
-                            responseContent = await Core.rconClient.ExecuteCommandAsync("SwitchMap " + rconCommand.Arguments[0] + " " + rconCommand.Arguments[1]);
-                            break;
-                        case "UpdateServerName":
-                            responseContent = await Core.rconClient.ExecuteCommandAsync("UpdateServerName " + rconCommand.Arguments[0]);
-                            break;
-
-                        default:
-                            Console.WriteLine("Unknown request");
-                            responseContent = ToJsonArray("UnknownRequest");
-                            break;
-                    }
+                    await RunRconCommand(rconCommand);
                 }
 
                 //GET Requests
@@ -119,6 +118,7 @@ namespace RconInteractionForMods
                 RespondToRequest(resp, responseContent);
             }
         }
+
         public string ToJsonArray(string str, bool isJsonString = false)
         {
             return isJsonString ? "[" + str + "]" : "[\"" + str + "\"]";

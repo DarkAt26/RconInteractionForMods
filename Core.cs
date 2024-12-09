@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Text.Json.Nodes;
 
 
 namespace RconInteractionForMods
@@ -20,7 +21,10 @@ namespace RconInteractionForMods
             //Load & Print Config
             Config.Load("rifm_config.json");
             Config.Print();
-            
+
+            Config.LoadCmdCfg("rifm_cmd_config.json");
+            Config.PrintCmdCfg();
+
             //start HttpServer and RconClient
             httpServer.Start();
             rconClient.Start();

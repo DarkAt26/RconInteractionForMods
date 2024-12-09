@@ -25,6 +25,7 @@ namespace RconInteractionForMods
             _ = RconConnection();
         }
 
+        private int timeSinceLastSendedMessage = 150000;
         private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         public async Task RconConnection()
@@ -52,11 +53,17 @@ namespace RconInteractionForMods
             Log("Connected.");
 
             //InfinityLoop to keep the connection up
-            //RemoteHost closes connection after 3 to 5min
+            //Send "KeepAlive" after 150s when the last message was send
             while (true)
             {
-                await Task.Delay(150000);
-                Send("KeepAlive");
+                await Task.Delay(10000);
+                timeSinceLastSendedMessage -= 10000;
+
+                if (timeSinceLastSendedMessage <= 0)
+                {
+                    Send("KeepAlive");
+                    timeSinceLastSendedMessage = 150000;
+                }
             }
         }
 
@@ -75,6 +82,7 @@ namespace RconInteractionForMods
             try
             {
                 await client.SendAsync(messageBytes, SocketFlags.None);
+                timeSinceLastSendedMessage = 150000;
                 Log("Send: " + message);
             }
             catch

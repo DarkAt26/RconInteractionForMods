@@ -6,32 +6,23 @@ using System.Threading.Tasks;
 
 namespace RconInteractionForMods
 {
-    public class RconCommands
+    public partial class HttpServer
     {
-        public async Task<string> SwitchMap(string? map, string? gameMode)
+        public async Task<string> RunRconCommand(RconCommand rconCommand)
         {
-            //cancel if arguments are null
-            if (map == null || map == ""|| gameMode == null || gameMode == "")
+
+            switch (rconCommand.Command)
             {
-                return "Invalid Command Arguments";
+                case "SwitchMap":
+                    return await Core.rconClient.ExecuteCommandAsync("SwitchMap " + rconCommand.Arguments[0] + " " + rconCommand.Arguments[1]);
+
+                case "UpdateServerName":
+                    return await Core.rconClient.ExecuteCommandAsync("UpdateServerName " + rconCommand.Arguments[0]);
+
+                default:
+                    Console.WriteLine("Unknown request");
+                    return ToJsonArray("UnknownRequest");
             }
-
-            return await Core.rconClient.ExecuteCommandAsync("SwitchMap " + map + " " + gameMode);
-        }
-
-        public async Task<string> RandomShit(string? map, string? gameMode)
-        {
-            //cancel if arguments are null
-            if (map == null || map == "" || gameMode == null || gameMode == "")
-            {
-                return "Invalid Command Arguments";
-            }
-
-            //Console.WriteLine("SwitchMap " + map + " " + gameMode);
-
-            await Core.rconClient.ExecuteCommandAsync("UpdateServerName DarkAt26-RandomDynamicNameLLLLL-" + new Random().Next(0, 10000000));
-
-            return "executed";
         }
     }
 }
