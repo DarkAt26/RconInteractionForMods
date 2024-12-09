@@ -37,6 +37,12 @@ cd
 ```
 
 ```
+sudo ufw status
+sudo ufw allow 8000(the port you chose)
+sudo ufw status
+```
+
+```
 sudo nano /etc/systemd/system/RconInteractionForMods.service
 ```
 ```
