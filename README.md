@@ -1,7 +1,7 @@
 # RconInteractionForMods
 
-mkdir RIFM<br>
-sudo nano /etc/systemd/system/RconInteractionForMods.service
+```mkdir RIFM```
+```sudo nano /etc/systemd/system/RconInteractionForMods.service```
 ```
 [Unit]
 Description=RconInteractionForMods
