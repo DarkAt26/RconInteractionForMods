@@ -20,7 +20,7 @@ namespace RconInteractionForMods
                     return await Core.rconClient.ExecuteCommandAsync("UpdateServerName " + rconCommand.Arguments[0]);
 
                 default:
-                    Console.WriteLine("Unknown request");
+                    Console.WriteLine("UnknownRequest");
                     return ToJsonArray("UnknownRequest");
             }
         }
