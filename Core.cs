@@ -21,7 +21,7 @@ namespace RconInteractionForMods
             //Load & Print Config
             Config.Load("rifm_config.json");
             Config.Print();
-
+            
             Config.LoadCmdCfg("rifm_cmd_config.json");
             Config.PrintCmdCfg();
 

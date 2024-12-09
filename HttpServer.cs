@@ -106,7 +106,7 @@ namespace RconInteractionForMods
                 //POST Requests
                 if (req.HttpMethod == "POST")
                 {
-                    await RunRconCommand(rconCommand);
+                    responseContent = await RunRconCommand(rconCommand);
                 }
 
                 //GET Requests
@@ -131,10 +131,18 @@ namespace RconInteractionForMods
 
             if (rconCommand.Command == "Custom")
             {
+                foreach (string cmd in rconCommands)
+                {
+                    if (args.ToLower().StartsWith(cmd.ToLower()))
+                    {
+                        return "Fuck You!";
+                    }
+                }
+
                 return await Core.rconClient.ExecuteCommandAsync(args);
             }
 
-            return await Core.rconClient.ExecuteCommandAsync(rconCommand + " " + args);
+            return await Core.rconClient.ExecuteCommandAsync(rconCommand.Command + " " + args);
         }
 
         public string ToJsonArray(string str, bool isJsonString = false)
@@ -190,5 +198,66 @@ namespace RconInteractionForMods
         {
             Console.WriteLine("HttpServer: " + data);
         }
+
+        public string[] rconCommands =
+        {
+            "Help",
+            "AddMapRotation",
+            "AddMod",
+            "Ban",
+            "Banlist",
+            "ClearEmptyVehicles",
+            "Disconnect",
+            "EnableCompMode",
+            "EnableVerboseLogging",
+            "EnableWhitelist",
+            "Gag",
+            "GiveAll",
+            "GiveCash",
+            "GiveItem",
+            "GiveTeamCash",
+            "InspectAll",
+            "InspectPlayer",
+            "InspectTeam",
+            "ItemList",
+            "Kick",
+            "Kill",
+            "MapList",
+            "ModeratorList",
+            "RefreshList",
+            "RemoveMapRotation",
+            "RemoveMod",
+            "ResetSND",
+            "PauseMatch",
+            "RotateMap",
+            "ServerInfo",
+            "SetBalanceTableURL",
+            "SetCash",
+            "SetLimitedAmmoType",
+            "SetMaxPlayers",
+            "SetPin",
+            "SetPlayerSkin",
+            "SetTimeLimit",
+            "ShowNametags",
+            "ShutdownServer",
+            "Slap",
+            "SwitchMap",
+            "SwitchTeam",
+            "Teleport",
+            "TTTAlwaysEnableSkinMenu",
+            "TTTEndRound",
+            "TTTFlushKarma",
+            "TTTGiveCredits",
+            "TTTPauseTimer",
+            "TTTSetKarma",
+            "TTTSetRole",
+            "Unban",
+            "UpdateServerName",
+            "UGCAddMod",
+            "UGCClearModList",
+            "UGCModList",
+            "UGCRemoveMod"
+        };
+
     }
 }
