@@ -29,14 +29,14 @@ User=root
 WantedBy = multi-user.target
 ```
 ```
-sudo systemctl start httpRcon
+sudo systemctl start RconInteractionForMods
 ```
 ```
-sudo systemctl stop httpRcon
+sudo systemctl stop RconInteractionForMods
 ```
 ```
-sudo systemctl restart httpRcon
+sudo systemctl restart RconInteractionForMods
 ```
 ```
-sudo systemctl status httpRcon
+sudo systemctl status RconInteractionForMods
 ```
