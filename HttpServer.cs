@@ -13,7 +13,7 @@ using static RconInteractionForMods.HttpServer;
 
 namespace RconInteractionForMods
 {
-    public partial class HttpServer
+    public class HttpServer
     {
         public class RconCommand
         {
@@ -117,6 +117,24 @@ namespace RconInteractionForMods
 
                 RespondToRequest(resp, responseContent);
             }
+        }
+
+        public async Task<string> RunRconCommand(RconCommand rconCommand)
+        {
+            string args = "";
+
+            foreach (string arg in rconCommand.Arguments)
+            {
+                args += arg + " ";
+            }
+            args = args.Trim();
+
+            if (rconCommand.Command == "Custom")
+            {
+                return await Core.rconClient.ExecuteCommandAsync(args);
+            }
+
+            return await Core.rconClient.ExecuteCommandAsync(rconCommand + " " + args);
         }
 
         public string ToJsonArray(string str, bool isJsonString = false)
