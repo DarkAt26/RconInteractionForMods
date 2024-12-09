@@ -4,6 +4,9 @@
 mkdir RIFM
 ```
 ```
+wget -P /root/RIFM -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMods/releases/latest/download/RconInteractionForMods.linux-x64
+```
+```
 chmod +x RconInteractionForMods
 ```
 ```
