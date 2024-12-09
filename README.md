@@ -19,6 +19,8 @@ chmod +x RconInteractionForMods
 ```
 ./RconInteractionForMods
 ```
+![grafik](https://github.com/user-attachments/assets/670217dc-971d-4e11-b69a-86f2ffad002a)
+
 ```
 nano rifm_config.json
 ```
@@ -28,6 +30,7 @@ nano rifm_cmd_config.json
 ```
 ./RconInteractionForMods
 ```
+![grafik](https://github.com/user-attachments/assets/1820876a-332b-480e-910d-1da0c61556aa)
 
 ```
 cd
