@@ -9,6 +9,15 @@ wget -P /root/RIFM -O RconInteractionForMods https://github.com/DarkAt26/RconInt
 ```
 chmod +x RconInteractionForMods
 ```
+
+```
+./ RconInteractionForMods
+```
+
+
+
+
+
 ```
 sudo nano /etc/systemd/system/RconInteractionForMods.service
 ```
