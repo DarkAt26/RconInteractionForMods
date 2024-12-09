@@ -2,12 +2,12 @@
 
 ```
 [Unit]
-Description=httpRcon
+Description=RconInteractionForMods
 
 [Service]
 Type=simple
-WorkingDirectory=/root
-ExecStart=/root/RconInteractionForMods
+WorkingDirectory=/root/RIFM
+ExecStart=/root/RIFM/RconInteractionForMods
 
 RestartSec=1
 Restart=always
