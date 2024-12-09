@@ -90,7 +90,7 @@ namespace RconInteractionForMods
 
 
                 RconCommand rconCommand = GetRconCommand(req);
-
+                Log("UGC" + rconCommand.UGC);
 
                 //Skip if UGC isnt allowed to execute Command
                 if ( !(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null)
@@ -101,7 +101,6 @@ namespace RconInteractionForMods
                 }
 
 
-                Log("UGC" + rconCommand.UGC);
 
                 //POST Requests
                 if (req.HttpMethod == "POST")
