@@ -101,7 +101,7 @@ namespace RconInteractionForMods
                 }
 
 
-                Log(rconCommand.UGC);
+                Log("UGC" + rconCommand.UGC);
 
                 //POST Requests
                 if (req.HttpMethod == "POST")
