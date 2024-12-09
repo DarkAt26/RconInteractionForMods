@@ -7,7 +7,7 @@ mkdir RIFM
 cd RIFM
 ```
 ```
-wget -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMods/releases/download/V1.0/RconInteractionForMods.linux-x64
+wget -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMods/releases/latest/download/RconInteractionForMods.linux-x64
 ```
 ```
 chmod +x RconInteractionForMods
