@@ -12,26 +12,23 @@ wget -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMod
 ```
 chmod +x RconInteractionForMods
 ```
+
+```
+./RconInteractionForMods
+```
+```
+nano rifm_config.json
+```
+```
+nano rifm_cmd_config.json
+```
+```
+./RconInteractionForMods
+```
+
 ```
 cd
 ```
-
-
-
-```
-./RIFM/RconInteractionForMods
-```
-```
-nano ~/RIFM/rifm_config.json
-```
-```
-nano ~/RIFM/rifm_cmd_config.json
-```
-```
-./RIFM/RconInteractionForMods
-```
-
-
 
 ```
 sudo nano /etc/systemd/system/RconInteractionForMods.service
