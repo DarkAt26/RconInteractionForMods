@@ -11,7 +11,7 @@ chmod +x RconInteractionForMods
 ```
 
 ```
-./ RconInteractionForMods
+./RconInteractionForMods
 ```
 
 
