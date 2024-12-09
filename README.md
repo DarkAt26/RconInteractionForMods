@@ -4,6 +4,9 @@
 mkdir RIFM
 ```
 ```
+chmod +x RconInteractionForMods
+```
+```
 sudo nano /etc/systemd/system/RconInteractionForMods.service
 ```
 ```
