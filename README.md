@@ -1,5 +1,6 @@
 # RconInteractionForMods
 
+sudo nano /etc/systemd/system/RconInteractionForMods.service
 ```
 [Unit]
 Description=RconInteractionForMods
