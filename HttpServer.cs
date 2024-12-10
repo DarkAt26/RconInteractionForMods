@@ -61,7 +61,7 @@ namespace RconInteractionForMods
                 string responseContent = "This message shouldnt be seen at any point. Something went wrong.";
 
                 //Skip Requests which dont target httpRcon
-                if (req.RawUrl!.StartsWith("/httpRcon") == false)
+                if (req.RawUrl!.StartsWith("/rifm") == false)
                 {
                     resp.Close();
                     continue;
