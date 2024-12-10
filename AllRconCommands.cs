@@ -65,7 +65,8 @@ namespace RconInteractionForMods
             "UGCAddMod",
             "UGCClearModList",
             "UGCModList",
-            "UGCRemoveMod"
+            "UGCRemoveMod",
+            "Custom"
         };
     }
 }
