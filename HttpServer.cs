@@ -185,8 +185,18 @@ namespace RconInteractionForMods
         {
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
-            listener.Prefixes.Add("http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
-            listener.Start();
+
+            try
+            {
+                listener.Prefixes.Add("http://" + Config.cfg.HttpRequest_Ip + ":" + Config.cfg.HttpRequest_Port + "/");
+            }
+            catch
+            {
+                Log("");
+                return;
+            }
+                
+                listener.Start();
             Log("Started.");
 
             // Handle requests
