@@ -192,7 +192,7 @@ namespace RconInteractionForMods
             }
             catch
             {
-                Log("");
+                Log("Invalid Data: Check Config.");
                 return;
             }
                 
