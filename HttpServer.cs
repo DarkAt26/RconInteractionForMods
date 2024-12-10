@@ -93,7 +93,7 @@ namespace RconInteractionForMods
                 Log("UGC" + rconCommand.UGC);
 
                 //Skip if UGC isnt allowed to execute Command
-                if ( !(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null)
+                if ( (req.HttpMethod != "GET") && (!(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null) )
                 {
                     Console.WriteLine("Skipped, Unauthorized-UGC");
                     RespondToRequest(resp, ToJsonArray("Unauthorized-UGC"));
