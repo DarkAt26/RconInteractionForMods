@@ -25,7 +25,7 @@ namespace RconInteractionForMods
             _ = RconConnection();
         }
 
-        private int timeSinceLastSendedMessage = 150000;
+        private int timeSinceLastSendedMessage = 120000;
         private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         public async Task RconConnection()
@@ -62,7 +62,7 @@ namespace RconInteractionForMods
                 if (timeSinceLastSendedMessage <= 0)
                 {
                     Send("KeepAlive");
-                    timeSinceLastSendedMessage = 150000;
+                    timeSinceLastSendedMessage = 120000;
                 }
             }
         }
@@ -82,12 +82,18 @@ namespace RconInteractionForMods
             try
             {
                 await client.SendAsync(messageBytes, SocketFlags.None);
-                timeSinceLastSendedMessage = 150000;
+                timeSinceLastSendedMessage = 120000;
                 Log("Send: " + message);
             }
             catch
             {
                 Log("Send: Error: Connection Closed");
+                
+                await Task.Delay(10000);
+                Log("Reconnect Rcon");
+                
+                _ = RconConnection();
+                
             }
         }
 
