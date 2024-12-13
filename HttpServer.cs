@@ -27,7 +27,7 @@ namespace RconInteractionForMods
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
-            Console.WriteLine("Request #{0} {1}", ++RequestCount, req.HttpMethod);
+            Log("Request #" + ++RequestCount + " " + req.HttpMethod);
         }
 
         public RconCommand GetRconCommand(HttpListenerRequest req)
@@ -42,7 +42,7 @@ namespace RconInteractionForMods
             }
             catch
             {
-                Console.WriteLine("RconCommand is Invalid");
+                Log("RconCommand is Invalid");
                 return new RconCommand();
             }
         }
@@ -74,7 +74,7 @@ namespace RconInteractionForMods
                 //Skip Unauthorized Requests
                 if (!IsAuthorized(req))
                 {
-                    Console.WriteLine("Skipped, Unauthorized");
+                    Log("Skipped, Unauthorized");
                     RespondToRequest(resp, ToJsonArray("Unauthorized"));
                     continue;
                 }
@@ -82,7 +82,7 @@ namespace RconInteractionForMods
                 //Skip NonLocal Requests if not allowed
                 if ((Config.cfg.HttpRequest_AcceptNonLocalRequests == false && req.IsLocal == false) && req.HttpMethod != "GET")
                 {
-                    Console.WriteLine("Skipped, Unauthorized-NonLocal");
+                    Log("Skipped, Unauthorized-NonLocal");
                     RespondToRequest(resp, ToJsonArray("Unauthorized-NonLocal"));
                     continue;
                 }
@@ -90,12 +90,22 @@ namespace RconInteractionForMods
 
 
                 RconCommand rconCommand = GetRconCommand(req);
+
+                //Skip commands that are not in the AllRconCommands.cs list
+                if ((req.HttpMethod != "GET") && (!rconCommands.Contains(rconCommand.Command)))
+                {
+                    Log("Skipped, Command not in list.");
+                    RespondToRequest(resp, ToJsonArray("Command not in list."));
+                    continue;
+                }
+
+
                 Log("UGC" + rconCommand.UGC);
 
                 //Skip if UGC isnt allowed to execute Command
                 if ( (req.HttpMethod != "GET") && (!(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null) )
                 {
-                    Console.WriteLine("Skipped, Unauthorized-UGC");
+                    Log("Skipped, Unauthorized-UGC");
                     RespondToRequest(resp, ToJsonArray("Unauthorized-UGC"));
                     continue;
                 }
