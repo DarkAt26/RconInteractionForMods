@@ -25,11 +25,14 @@ namespace RconInteractionForMods
             _ = RconConnection();
         }
 
-        private int timeSinceLastSendedMessage = 120000;
+        private int defaultTSLSM = 1800*1000;
+        private int timeSinceLastSendedMessage;
         private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         public async Task RconConnection()
         {
+            timeSinceLastSendedMessage = defaultTSLSM;
+
             //Create connection
             await client.ConnectAsync(Config.cfg.Rcon_Ip, Config.cfg.Rcon_Port);
 
@@ -53,7 +56,7 @@ namespace RconInteractionForMods
             Log("Connected.");
 
             //InfinityLoop to keep the connection up
-            //Send "KeepAlive" after 150s when the last message was send
+            //Send "KeepAlive" after 000s when the last message was send
             while (true)
             {
                 await Task.Delay(10000);
@@ -62,7 +65,6 @@ namespace RconInteractionForMods
                 if (timeSinceLastSendedMessage <= 0)
                 {
                     Send("KeepAlive");
-                    timeSinceLastSendedMessage = 120000;
                 }
             }
         }
@@ -82,7 +84,7 @@ namespace RconInteractionForMods
             try
             {
                 await client.SendAsync(messageBytes, SocketFlags.None);
-                timeSinceLastSendedMessage = 120000;
+                timeSinceLastSendedMessage = defaultTSLSM;
                 Log("Send: " + message);
             }
             catch
