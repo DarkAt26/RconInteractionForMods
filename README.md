@@ -34,7 +34,7 @@ chmod +x RconInteractionForMods
 ```
 ![grafik](https://github.com/user-attachments/assets/670217dc-971d-4e11-b69a-86f2ffad002a)
 //edit the normal config file. keys must not contain '"'<br>
-//viewkey is used to read some of the data such as executed commands,... example: http://000.000.000.000:0000/rifm?authkey=<yourVIEWkey> <br>
+//viewkey is used to read some of the data such as executed commands,... example: http://000.000.000.000:0000/rifm?authkey=YOURVIEWKEY <br>
 //set accept non local requests to false if the code is not executed on the same machine as your pavlov server
 ```
 nano rifm_config.json
