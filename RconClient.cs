@@ -89,7 +89,7 @@ namespace RconInteractionForMods
             {
                 Log("Send: Error: Connection Closed");
                 
-                await Task.Delay(10000);
+                await Task.Delay(1000);
                 Log("Reconnect Rcon");
                 
                 _ = RconConnection();
