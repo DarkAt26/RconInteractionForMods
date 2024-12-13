@@ -18,7 +18,7 @@ mkdir RIFM
 ```
 cd RIFM
 ```
-//download the compiled code from my github, copied command is for linux-x64 servers, use another version if needed
+//download the compiled code (latest version) from my github, copied command is for linux-x64 servers, use another version if needed
 ```
 wget -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMods/releases/latest/download/RconInteractionForMods.linux-x64
 ```
