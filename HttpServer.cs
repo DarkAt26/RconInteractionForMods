@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Transactions;
 using static RconInteractionForMods.HttpServer;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace RconInteractionForMods
@@ -203,6 +204,7 @@ namespace RconInteractionForMods
             catch
             {
                 Log("Invalid Data: Check Config.");
+                Environment.Exit(0);
                 return;
             }
                 

@@ -30,7 +30,11 @@ namespace RconInteractionForMods
             rconClient.Start();
 
             //InfinityLoop to keep running
-            while (true) { }
+            while (true)
+            {
+                //delay to not trash cpu
+                Thread.Sleep(10000);
+            }
         }
     }
 }
