@@ -206,7 +206,7 @@ namespace RconInteractionForMods
                 return;
             }
                 
-                listener.Start();
+            listener.Start();
             Log("Started.");
 
             // Handle requests
