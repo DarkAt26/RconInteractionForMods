@@ -91,10 +91,10 @@ namespace RconInteractionForMods
             {
                 Log("Send: Error: Connection Closed");
                 
-                //await Task.Delay(1000);
-                //Log("Reconnect Rcon");
+                await Task.Delay(1000);
+                Log("Reconnect Rcon");
                 
-                //_ = RconConnection();
+                _ = RconConnection();
                 
             }
         }
