@@ -110,7 +110,7 @@ namespace RconInteractionForMods
 
         public void Log(string data)
         {
-            Console.WriteLine("RconClient: " + data);
+            Console.WriteLine("RconClient: " + data.Trim());
         }
     }
 }

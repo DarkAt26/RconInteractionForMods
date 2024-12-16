@@ -217,7 +217,7 @@ namespace RconInteractionForMods
 
         public void Log(string data)
         {
-            Console.WriteLine("HttpServer: " + data);
+            Console.WriteLine("HttpServer: " + data.Trim());
         }
     }
 }
