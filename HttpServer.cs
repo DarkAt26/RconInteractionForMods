@@ -170,10 +170,9 @@ namespace RconInteractionForMods
 
             //GET Auth
             else if ( (req.HttpMethod == "GET") &&
-                (
-                    (Config.cfg.HttpRequest_AuthKey != req.Headers.Get("Authorization")) &&
-                    !(req.RawUrl!.EndsWith("?viewkey=" + Config.cfg.HttpRequest_ViewKey)) &&
-                    (Config.cfg.HttpRequest_ViewKey != "")
+                ( (Config.cfg.HttpRequest_AuthKey != req.Headers.Get("Authorization"))
+                    && !(req.RawUrl!.EndsWith("?viewkey=" + Config.cfg.HttpRequest_ViewKey))
+                    && (Config.cfg.HttpRequest_ViewKey != "")
                 ) )
             {
                 return false;
