@@ -123,7 +123,7 @@ namespace RconInteractionForMods
                 //GET Requests
                 else if (req.HttpMethod == "GET")
                 {
-                    responseContent = ToJsonArray("{\"connectionEverClosed\": " + connectionEverClosed + "}", true);
+                    responseContent = ToJsonArray("{\"connectionEverClosed\": " + connectionEverClosed.ToString().ToLower() + "}", true);
                 }
 
                 RespondToRequest(resp, responseContent);
