@@ -64,7 +64,7 @@ namespace RconInteractionForMods
 
                 if (timeSinceLastSendedMessage <= 0)
                 {
-                    Send("KeepAlive");
+                    //Send("KeepAlive");
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace RconInteractionForMods
             catch
             {
                 Log("Send: Error: Connection Closed");
-                
+                Core.httpServer.connectionEverClosed = true;
                 await Task.Delay(1000);
                 Log("Reconnect Rcon");
                 

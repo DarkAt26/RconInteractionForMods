@@ -25,6 +25,7 @@ namespace RconInteractionForMods
 
         public HttpListener? listener;
         public int RequestCount = 0;
+        public bool connectionEverClosed = false;
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
@@ -122,7 +123,7 @@ namespace RconInteractionForMods
                 //GET Requests
                 else if (req.HttpMethod == "GET")
                 {
-                    responseContent = ToJsonArray("ReadThisBitch");
+                    responseContent = ToJsonArray("{connectionEverClosed: " + connectionEverClosed + "}", true);
                 }
 
                 RespondToRequest(resp, responseContent);
