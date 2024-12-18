@@ -1,6 +1,7 @@
 ﻿using RconInteractionForMods;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -123,7 +124,16 @@ namespace RconInteractionForMods
                 //GET Requests
                 else if (req.HttpMethod == "GET")
                 {
-                    responseContent = ToJsonArray("{\"connectionEverClosed\": " + connectionEverClosed.ToString().ToLower() + "}", true);
+                    if (req.RawUrl!.StartsWith("/rifm/disconnect"))
+                    {
+                        Core.rconClient.client.Disconnect(true);
+                        responseContent = ToJsonArray("Disconnected RconClient Connection.");
+                        Core.rconClient.Send("Check Connection");
+                    }
+                    else
+                    {
+                        responseContent = ToJsonArray("{\"connectionEverClosed\": " + connectionEverClosed.ToString().ToLower() + "}", true);
+                    }
                 }
 
                 RespondToRequest(resp, responseContent);

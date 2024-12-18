@@ -25,9 +25,9 @@ namespace RconInteractionForMods
             _ = RconConnection();
         }
 
-        private int defaultTSLSM = 1800*1000;
-        private int timeSinceLastSendedMessage;
-        private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public int defaultTSLSM = 1800*1000;
+        public int timeSinceLastSendedMessage;
+        public Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         public async Task RconConnection()
         {
