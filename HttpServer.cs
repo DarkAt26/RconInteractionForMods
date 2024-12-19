@@ -126,6 +126,7 @@ namespace RconInteractionForMods
                 {
                     if (req.RawUrl!.StartsWith("/rifm/disconnect"))
                     {
+                        //disconnect rcon client
                         Core.rconClient.client.Disconnect(true);
                         responseContent = ToJsonArray("Disconnected RconClient Connection.");
                         Core.rconClient.Send("Check Connection");

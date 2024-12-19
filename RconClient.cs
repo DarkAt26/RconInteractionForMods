@@ -28,6 +28,7 @@ namespace RconInteractionForMods
         public int defaultTSLSM = 1800*1000;
         public int timeSinceLastSendedMessage;
         public Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public List<string> missedMessages = new List<string>();
 
         public async Task RconConnection()
         {
@@ -90,8 +91,11 @@ namespace RconInteractionForMods
             catch
             {
                 Log("Send: Error: Connection Closed");
+
+                missedMessages.Add(message);
+
                 Core.httpServer.connectionEverClosed = true;
-                await Task.Delay(1000);
+                
                 Log("Reconnect Rcon");
                 
                 _ = RconConnection();
