@@ -25,6 +25,7 @@ namespace RconInteractionForMods
             _ = RconConnection();
         }
 
+        public bool connected = false;
         public int defaultTSLSM = 1800*1000;
         public int timeSinceLastSendedMessage;
         public Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -45,7 +46,7 @@ namespace RconInteractionForMods
             }
 
             //respond with Password
-            Send(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
+            await Send(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
 
             //check if response is Authenticated
             if (await Receive() != "Authenticated=1\r\n")
@@ -54,6 +55,7 @@ namespace RconInteractionForMods
                 return;
             }
 
+            connected = true;
             Log("Connected.");
 
             //InfinityLoop to keep the connection up
@@ -73,34 +75,44 @@ namespace RconInteractionForMods
         public async Task<string> ExecuteCommandAsync(string command)
         {
             Log("Execute Command: " + command);
+
+            if (await Send(command))
+            {
+                return await Receive();
+            }
             
-            Send(command);
-            
-            return await Receive();
+            return "Executing Command Failed (" + command + ")";
         }
 
-        public async void Send(string message)
+        public async Task<bool> Send(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-            try
-            {
-                await client.SendAsync(messageBytes, SocketFlags.None);
-                timeSinceLastSendedMessage = defaultTSLSM;
-                Log("Send: " + message);
-            }
-            catch
-            {
-                Log("Send: Error: Connection Closed");
 
-                missedMessages.Add(message);
+            int timeout = 5;
+            while (timeout > 0)
+            {
+                //Skip a loop if rcon client not connected
+                if (!connected) { continue; }
 
-                Core.httpServer.connectionEverClosed = true;
-                
-                Log("Reconnect Rcon");
-                
-                _ = RconConnection();
-                
+                try
+                {
+                    await client.SendAsync(messageBytes, SocketFlags.None);
+                    timeSinceLastSendedMessage = defaultTSLSM;
+                    Log("Send: " + message);
+                    return true;
+                }
+                catch
+                {
+                    Log("Send: Error: Connection Closed");
+                    connected = false;
+                    Log("Reconnect Rcon");
+                    _ = RconConnection();
+                }
+
+                Thread.Sleep(200);
+                timeout--;
             }
+            return false;
         }
 
         public async Task<string> Receive()
