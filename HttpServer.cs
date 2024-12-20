@@ -1,4 +1,5 @@
-﻿using RconInteractionForMods;
+﻿using Newtonsoft.Json;
+using RconInteractionForMods;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -26,7 +27,6 @@ namespace RconInteractionForMods
 
         public HttpListener? listener;
         public int RequestCount = 0;
-        public bool connectionEverClosed = false;
 
         public void PrintRequestDetails(HttpListenerRequest req)
         {
@@ -41,7 +41,7 @@ namespace RconInteractionForMods
             
             try
             {
-                return JsonSerializer.Deserialize<RconCommand>(requestBody)!;
+                return System.Text.Json.JsonSerializer.Deserialize<RconCommand>(requestBody)!;
             }
             catch
             {
@@ -129,11 +129,11 @@ namespace RconInteractionForMods
                         //disconnect rcon client
                         Core.rconClient.client.Disconnect(true);
                         responseContent = ToJsonArray("Disconnected RconClient Connection.");
-                        Core.rconClient.Send("Check Connection");
+                        _ = Core.rconClient.Send("Check Connection");
                     }
                     else
                     {
-                        responseContent = ToJsonArray("{\"connectionEverClosed\": " + connectionEverClosed.ToString().ToLower() + "}", true);
+                        responseContent = JsonConvert.SerializeObject(Core.rconClient.log);
                     }
                 }
 

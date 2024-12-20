@@ -19,19 +19,23 @@ namespace RconInteractionForMods
 {
     public class RconClient
     {
-        public void Start()
-        {
-            //Create Rcon Connection
-            _ = RconConnection();
-        }
+        public void Start() { _ = Connect(); } //Create Rcon Connection
 
         public bool connected = false;
         public int defaultTSLSM = 1800*1000;
         public int timeSinceLastSendedMessage;
         public Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        public List<string> missedMessages = new List<string>();
+        public List<string> log = new List<string>();
 
-        public async Task RconConnection()
+        public void Reconnect()
+        {
+            Log("Reconnect Rcon");
+            connected = false;
+            client.Disconnect(true);
+            _ = Connect();
+        }
+
+        public async Task Connect()
         {
             timeSinceLastSendedMessage = defaultTSLSM;
 
@@ -46,7 +50,7 @@ namespace RconInteractionForMods
             }
 
             //respond with Password
-            await Send(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower());
+            await Send(Convert.ToHexString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Config.cfg.Rcon_Password))).ToLower(), true);
 
             //check if response is Authenticated
             if (await Receive() != "Authenticated=1\r\n")
@@ -54,10 +58,10 @@ namespace RconInteractionForMods
                 Log("ERROR: Unauthorized");
                 return;
             }
-
+            
             connected = true;
             Log("Connected.");
-
+            
             //InfinityLoop to keep the connection up
             //Send "KeepAlive" after 000s when the last message was send
             while (true)
@@ -67,7 +71,7 @@ namespace RconInteractionForMods
 
                 if (timeSinceLastSendedMessage <= 0)
                 {
-                    //Send("KeepAlive");
+                    _ = Send("KeepAlive");
                 }
             }
         }
@@ -75,16 +79,25 @@ namespace RconInteractionForMods
         public async Task<string> ExecuteCommandAsync(string command)
         {
             Log("Execute Command: " + command);
+            string received = "";
 
             if (await Send(command))
             {
-                return await Receive();
+                received = await Receive();
+
+                return received;
             }
-            
-            return "Executing Command Failed (" + command + ")";
+            else
+            {
+                received = "Executing Command Failed (" + command + ")";
+            }
+
+            log.Add(command + " -> " + received);
+
+            return received;
         }
 
-        public async Task<bool> Send(string message)
+        public async Task<bool> Send(string message, bool login = false)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
 
@@ -92,7 +105,11 @@ namespace RconInteractionForMods
             while (timeout > 0)
             {
                 //Skip a loop if rcon client not connected
-                if (!connected) { continue; }
+                if (!connected && !login)
+                {
+                    Thread.Sleep(200);
+                    continue;
+                }
 
                 try
                 {
@@ -104,9 +121,7 @@ namespace RconInteractionForMods
                 catch
                 {
                     Log("Send: Error: Connection Closed");
-                    connected = false;
-                    Log("Reconnect Rcon");
-                    _ = RconConnection();
+                    Reconnect();
                 }
 
                 Thread.Sleep(200);
