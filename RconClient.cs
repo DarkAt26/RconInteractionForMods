@@ -90,7 +90,7 @@ namespace RconInteractionForMods
                 received = "Executing Command Failed (" + command + ")";
             }
 
-            log.Add(command + " -> " + received);
+            log.Add(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff - ") + command + " --> " + received);
 
             return received;
         }

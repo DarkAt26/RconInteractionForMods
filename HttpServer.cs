@@ -133,7 +133,13 @@ namespace RconInteractionForMods
                     }
                     else
                     {
-                        responseContent = JsonConvert.SerializeObject(Core.rconClient.log);
+                        List<string> log = new List<string>();
+                        for (int i = Core.rconClient.log.Count-1; i >= 0; i--)
+                        {
+                            log.Add(Core.rconClient.log[i]);
+                        }
+
+                        responseContent = "{\"commandLogs\":" + JsonConvert.SerializeObject(log) + "}";
                     }
                 }
 
