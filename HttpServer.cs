@@ -103,7 +103,6 @@ namespace RconInteractionForMods
                 }
 
 
-                Log("UGC" + rconCommand.UGC);
 
                 //Skip if UGC isnt allowed to execute Command
                 if ( (req.HttpMethod != "GET") && (!(Config.cmds["UGC" + rconCommand.UGC].Contains(rconCommand.Command)) || rconCommand.UGC == "" || rconCommand.UGC == null) )
@@ -118,6 +117,7 @@ namespace RconInteractionForMods
                 //POST Requests
                 if (req.HttpMethod == "POST")
                 {
+                    Log("UGC" + rconCommand.UGC);
                     responseContent = await RunRconCommand(rconCommand);
                 }
 
@@ -167,10 +167,10 @@ namespace RconInteractionForMods
                     }
                 }
 
-                return await Core.rconClient.ExecuteCommandAsync(args);
+                return await Core.rconClient.ExecuteCommandAsync(args, rconCommand.UGC);
             }
 
-            return await Core.rconClient.ExecuteCommandAsync(rconCommand.Command + " " + args);
+            return await Core.rconClient.ExecuteCommandAsync(rconCommand.Command + " " + args, rconCommand.UGC);
         }
 
         public string ToJsonArray(string str, bool isJsonString = false)

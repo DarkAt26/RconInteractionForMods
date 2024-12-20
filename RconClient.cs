@@ -76,7 +76,7 @@ namespace RconInteractionForMods
             }
         }
 
-        public async Task<string> ExecuteCommandAsync(string command)
+        public async Task<string> ExecuteCommandAsync(string command, string? UGC)
         {
             Log("Execute Command: " + command);
             string received = "";
@@ -90,11 +90,11 @@ namespace RconInteractionForMods
                 received = "Executing Command Failed (" + command + ")";
             }
 
-            log.Add(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff - ") + command + " --> " + received);
+            log.Add(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff | UGC") + UGC + ": \"" + command + "\" --> " + received.Trim());
 
             return received;
         }
-
+        
         public async Task<bool> Send(string message, bool login = false)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
