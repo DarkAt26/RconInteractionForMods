@@ -84,8 +84,6 @@ namespace RconInteractionForMods
             if (await Send(command))
             {
                 received = await Receive();
-
-                return received;
             }
             else
             {
