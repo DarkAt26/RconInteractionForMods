@@ -71,7 +71,7 @@ namespace RconInteractionForMods
 
                 if (timeSinceLastSendedMessage <= 0)
                 {
-                    _ = Send("KeepAlive");
+                    _ = Send("Keep-Alive");
                 }
             }
         }
@@ -91,6 +91,10 @@ namespace RconInteractionForMods
             }
 
             log.Add(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff | UGC") + UGC + ": \"" + command + "\" --> " + received.Trim());
+            while (log.Count > 100)
+            {
+                log.RemoveAt(log.Count - 1);
+            }
 
             return received;
         }
