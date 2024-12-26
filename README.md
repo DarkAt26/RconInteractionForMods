@@ -141,3 +141,21 @@ RotateMap
 ```
 UGCRemoveMod UGC4000363
 ```
+
+# #Update
+//stop RconInteractionForMods
+```
+sudo systemctl stop RconInteractionForMods
+```
+//go into the folder RIFM
+```
+cd RIFM
+```
+//download the compiled code (latest version) from my github, copied command is for linux-x64 servers, use another version if needed<br>
+```
+wget -O RconInteractionForMods https://github.com/DarkAt26/RconInteractionForMods/releases/latest/download/RconInteractionForMods.linux-x64
+```
+//start RconInteractionForMods
+```
+sudo systemctl start RconInteractionForMods
+```
