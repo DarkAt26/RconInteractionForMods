@@ -7,7 +7,7 @@ you need full server/file access to install the code which lets the mod use the 
 the guide uses code which i created for which i dont take any responsibility if it causes you any inconveniences or damages<br>
 you obviously can create your own code for that if wanted. look at the code i posted to basically see what it needs to work<br>
 
-As root:
+As root: (doesnt have to be root. if you use something else make sure to change the data for the service)
 
 //create a folder named "RIFM"
 ```
