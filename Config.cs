@@ -20,6 +20,7 @@ namespace RconInteractionForMods
             if (!File.Exists(configPath))
             {
                 //create default config string
+                cfg.HttpRequest_Ip = GetLocalIPAddress();
                 string jsonString = JsonConvert.SerializeObject(cfg, Formatting.Indented);
                 
                 File.WriteAllText(configPath, jsonString);
@@ -142,7 +143,7 @@ namespace RconInteractionForMods
 
         public class Cfg //DataHolder
         {
-            public string HttpRequest_Ip { get; set; } = GetLocalIPAddress();
+            public string HttpRequest_Ip { get; set; } = "";
             public int HttpRequest_Port { get; set; } = 8000;
             public string HttpRequest_AuthKey { get; set; } = "";
             public string HttpRequest_ViewKey { get; set; } = "";
