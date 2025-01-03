@@ -7,7 +7,7 @@ you need full server/file access to install the code which lets the mod use the 
 the guide uses code which i created for which i dont take any responsibility if it causes you any inconveniences or damages<br>
 you obviously can create your own code for that if wanted. look at the code i posted to basically see what it needs to work<br>
 
-As steam user: (doesnt have to be steam. if you use something else make sure to change the user for the service)```sudo su -l steam```
+As steam user: (doesnt have to be steam. if you use something else make sure to change the user for the service)   ```sudo su -l steam```
 
 //create a folder named "RIFM"
 ```
