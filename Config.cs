@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,6 +98,29 @@ namespace RconInteractionForMods
             }
         }
 
+        public static string GetLocalIPAddress()
+        {
+            try
+            {
+                // Get all host entries for the current machine
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    // Check for IPv4 and skip loopback addresses
+                    if (ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip))
+                    {
+                        return ip.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            return "";
+        }
+
         public static void PrintCmdCfg()
         {
             Console.WriteLine("-------------------------CmdConfig--------------------------");
@@ -117,7 +142,7 @@ namespace RconInteractionForMods
 
         public class Cfg //DataHolder
         {
-            public string HttpRequest_Ip { get; set; } = "";
+            public string HttpRequest_Ip { get; set; } = GetLocalIPAddress();
             public int HttpRequest_Port { get; set; } = 8000;
             public string HttpRequest_AuthKey { get; set; } = "";
             public string HttpRequest_ViewKey { get; set; } = "";
