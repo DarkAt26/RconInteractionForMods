@@ -7,7 +7,7 @@ you need full server/file access to install the code which lets the mod use the 
 the guide uses code which i created for which i dont take any responsibility if it causes you any inconveniences or damages<br>
 you obviously can create your own code for that if wanted. look at the code i posted to basically see what it needs to work<br>
 
-As root: (doesnt have to be root. if you use something else make sure to change the data for the service)
+As steam user: (doesnt have to be steam. if you use something else make sure to change the user for the service) ```sudo su -l steam```
 
 //create a folder named "RIFM"
 ```
@@ -72,12 +72,13 @@ Description=RconInteractionForMods
 
 [Service]
 Type=simple
-WorkingDirectory=/root/RIFM
-ExecStart=/root/RIFM/RconInteractionForMods
+WorkingDirectory=/home/steam/RIFM
+ExecStart=/home/steam/RIFM/RconInteractionForMods
 
 RestartSec=1
 Restart=always
-User=root
+User=steam
+Group=steam
 
 [Install]
 WantedBy = multi-user.target
