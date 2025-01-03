@@ -50,9 +50,9 @@ nano rifm_cmd_config.json
 ```
 ![grafik](https://github.com/user-attachments/assets/1820876a-332b-480e-910d-1da0c61556aa)
 
-//leave the folder RIFM
+//logout steam user to be root
 ```
-cd
+logout
 ```
 
 //open the HttpRequest_Port to allow the http requests to pass through
